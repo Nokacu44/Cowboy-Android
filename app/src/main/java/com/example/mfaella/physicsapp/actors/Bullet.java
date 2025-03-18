@@ -1,9 +1,7 @@
 package com.example.mfaella.physicsapp.actors;
 
-import android.util.Log;
-
 import com.example.mfaella.physicsapp.Coordinates;
-import com.example.mfaella.physicsapp.Managers.PixmapManager;
+import com.example.mfaella.physicsapp.managers.PixmapManager;
 import com.example.mfaella.physicsapp.components.PhysicsComponent;
 import com.example.mfaella.physicsapp.components.SpriteComponent;
 import com.google.fpl.liquidfun.BodyType;

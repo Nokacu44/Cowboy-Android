@@ -1,4 +1,4 @@
-package com.example.mfaella.physicsapp.Managers;
+package com.example.mfaella.physicsapp.managers;
 
 import android.util.Log;
 
@@ -23,6 +23,7 @@ public class PixmapManager {
             loadPixmap("guns/bullet.png", Graphics.PixmapFormat.ARGB8888);
             loadPixmap("environment/rock1.png", Graphics.PixmapFormat.ARGB8888);
             loadPixmap("environment/crate.png", Graphics.PixmapFormat.ARGB8888);
+            loadPixmap("ui/bang_btn.png", Graphics.PixmapFormat.ARGB8888);
 
             Log.d("ASSETS ", String.valueOf(pixmapMap));
         }

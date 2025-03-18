@@ -18,7 +18,7 @@ import com.badlogic.androidgames.framework.Input;
 import com.badlogic.androidgames.framework.Screen;
 import com.example.mfaella.physicsapp.Box;
 import com.example.mfaella.physicsapp.Coordinates;
-import com.example.mfaella.physicsapp.Managers.PixmapManager;
+import com.example.mfaella.physicsapp.managers.PixmapManager;
 
 public abstract class AndroidGame extends Activity implements Game {
     AndroidFastRenderView renderView;
@@ -39,8 +39,8 @@ public abstract class AndroidGame extends Activity implements Game {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         boolean isLandscape = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
-        int frameBufferWidth = isLandscape ? 1820 : 360;
-        int frameBufferHeight = isLandscape ? 1080 : 640;
+        int frameBufferWidth = isLandscape ? 1920 : 1080;
+        int frameBufferHeight = isLandscape ? 1080 : 1920;
         Bitmap frameBuffer = Bitmap.createBitmap(frameBufferWidth,
                 frameBufferHeight, Config.RGB_565);
 

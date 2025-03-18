@@ -1,26 +1,20 @@
 package com.example.mfaella.physicsapp;
 
-import android.util.ArrayMap;
-import android.util.Log;
-
 import com.badlogic.androidgames.framework.Game;
 import com.badlogic.androidgames.framework.Graphics;
 import com.badlogic.androidgames.framework.Input;
 import com.badlogic.androidgames.framework.Screen;
-import com.example.mfaella.physicsapp.Managers.PixmapManager;
+import com.example.mfaella.physicsapp.managers.PixmapManager;
 import com.example.mfaella.physicsapp.actors.Actor;
 import com.example.mfaella.physicsapp.actors.Bullet;
 import com.example.mfaella.physicsapp.actors.Crate;
 import com.example.mfaella.physicsapp.actors.Gun;
 import com.example.mfaella.physicsapp.actors.Player;
-import com.example.mfaella.physicsapp.components.Component;
 import com.example.mfaella.physicsapp.components.PhysicsComponent;
 import com.example.mfaella.physicsapp.components.SpriteComponent;
+import com.example.mfaella.physicsapp.ui.Button;
 import com.google.fpl.liquidfun.BodyType;
-import com.google.fpl.liquidfun.Color;
 import com.google.fpl.liquidfun.ContactListener;
-import com.google.fpl.liquidfun.Draw;
-import com.google.fpl.liquidfun.Vec2;
 import com.google.fpl.liquidfun.World;
 
 import java.util.ArrayList;
@@ -56,6 +50,9 @@ public class CowboyScreen extends Screen {
         this.addAll(bullets);
         gun = new Gun((float) 61, player.y - 2, game.getInput(), physicsWorld, bullets);
         add(gun);
+
+        // UI actor come gli altri? Si per lo scopo del gioco non cambia nulla
+        add(new Button(32, 158, game.getInput()));
     }};
 
 

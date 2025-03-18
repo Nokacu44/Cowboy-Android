@@ -1,6 +1,6 @@
 package com.example.mfaella.physicsapp.actors;
 
-import com.example.mfaella.physicsapp.Managers.PixmapManager;
+import com.example.mfaella.physicsapp.managers.PixmapManager;
 import com.example.mfaella.physicsapp.components.SpriteComponent;
 
 public class Player extends Actor{

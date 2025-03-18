@@ -51,8 +51,8 @@ public interface Input {
     }
 
 
-    public void setOffsetX(int offset);
-    public void setOffsetY(int offset);
+    public void setOffsetX(float offset);
+    public void setOffsetY(float offset);
 
     public boolean isKeyPressed(int keyCode);
 

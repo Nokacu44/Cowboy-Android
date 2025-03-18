@@ -50,13 +50,6 @@ public class Coordinates {
         return dx * dx + dy * dy <= r * r;
     }
 
-    public static boolean isInRect(float x, float y, float left, float top, float right, float bottom) {
-        return x >= left && x <= right && y >= top && y <= bottom;
-    }
-
-    public static boolean isInBox(float px, float py, float x, float y, float width, float height) {
-        return px >= x && px <= x + width && py >= y && py <= y + height;
-    }
 
     /**
      * Ruota la coordinata X di un punto rispetto a un pivot di un angolo specificato in gradi.

@@ -3,16 +3,13 @@ package com.example.mfaella.physicsapp.actors;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.PathEffect;
-import android.util.Log;
 
 import com.badlogic.androidgames.framework.Graphics;
 import com.badlogic.androidgames.framework.Input;
 import com.example.mfaella.physicsapp.Coordinates;
-import com.example.mfaella.physicsapp.Managers.PixmapManager;
+import com.example.mfaella.physicsapp.managers.PixmapManager;
 import com.example.mfaella.physicsapp.components.PhysicsComponent;
 import com.example.mfaella.physicsapp.components.SpriteComponent;
-import com.google.fpl.liquidfun.Fixture;
-import com.google.fpl.liquidfun.RayCastCallback;
 import com.google.fpl.liquidfun.Vec2;
 import com.google.fpl.liquidfun.World;
 

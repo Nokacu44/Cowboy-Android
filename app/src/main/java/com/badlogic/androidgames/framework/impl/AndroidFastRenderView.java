@@ -52,8 +52,12 @@ public class AndroidFastRenderView extends SurfaceView implements Runnable {
                 int offsetX = (width - targetWidth) / 2;
                 int offsetY = (height - targetHeight) / 2;
 
-                Log.d("TARGET WIDTH", String.valueOf(targetWidth));
-                Log.d("TARGET HEIGHT", String.valueOf(targetHeight));
+                Log.d("GRAPHICS", String.valueOf(targetWidth));
+                Log.d("GRAPHICS", String.valueOf(targetHeight));                Log.d("TARGET WIDTH", String.valueOf(targetWidth));
+                Log.d("GRAPHICS", String.valueOf(offsetX));
+                Log.d("GRAPHICS", String.valueOf(offsetY));
+                game.getInput().setOffsetX(offsetX);
+                game.getInput().setOffsetY(offsetY);
                 dstRect.set(offsetX, offsetY, offsetX + targetWidth, offsetY + targetHeight);
             }
 

@@ -4,6 +4,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.os.Build.VERSION;
+import android.util.Log;
 import android.view.View;
 
 import com.badlogic.androidgames.framework.Input;
@@ -13,8 +14,12 @@ public class AndroidInput implements Input {
     KeyboardHandler keyHandler;
     TouchHandler touchHandler;
 
-    private int offsetX;
-    private int offsetY;
+    private float offsetX;
+    private float offsetY;
+    public float width;
+    public float height;
+    public float targetWidth;
+    public float targetHeight;
 
     public AndroidInput(Context context, View view, float scaleX, float scaleY) {
         accelHandler = new AccelerometerHandler(context);
@@ -26,12 +31,12 @@ public class AndroidInput implements Input {
     }
 
     @Override
-    public void setOffsetX(int offset) {
+    public void setOffsetX(float offset) {
         offsetX = offset;
     }
 
     @Override
-    public void setOffsetY(int offset) {
+    public void setOffsetY(float offset) {
         offsetY = offset;
     }
 
