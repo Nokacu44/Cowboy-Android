@@ -3,6 +3,8 @@ package com.example.mfaella.physicsapp;
 public class Coordinates {
 
     public static Box simulationSize;
+    public static float scaleX;
+    public static float scaleY;
     public static int gameWidth;
     public static int gameHeight;
 
@@ -51,15 +53,7 @@ public class Coordinates {
     }
 
 
-    /**
-     * Ruota la coordinata X di un punto rispetto a un pivot di un angolo specificato in gradi.
-     * @param px Coordinate X del punto da ruotare.
-     * @param py Coordinate Y del punto da ruotare.
-     * @param pivotX Coordinate X del punto di pivot.
-     * @param pivotY Coordinate Y del punto di pivot.
-     * @param angle Grado di rotazione.
-     * @return La nuova coordinata X del punto ruotato.
-     */
+
     public static int rotateX(int px, int py, int pivotX, int pivotY, double angle) {
         double radian = Math.toRadians(angle); // Conversione dell'angolo in radianti
         double cosTheta = Math.cos(radian);
@@ -73,15 +67,6 @@ public class Coordinates {
         return (int) (pivotX + relativeX * cosTheta - relativeY * sinTheta);
     }
 
-    /**
-     * Ruota la coordinata Y di un punto rispetto a un pivot di un angolo specificato in gradi.
-     * @param px Coordinate X del punto da ruotare.
-     * @param py Coordinate Y del punto da ruotare.
-     * @param pivotX Coordinate X del punto di pivot.
-     * @param pivotY Coordinate Y del punto di pivot.
-     * @param angle Grado di rotazione.
-     * @return La nuova coordinata Y del punto ruotato.
-     */
     public static int rotateY(int px, int py, int pivotX, int pivotY, double angle) {
         double radian = Math.toRadians(angle); // Conversione dell'angolo in radianti
         double cosTheta = Math.cos(radian);

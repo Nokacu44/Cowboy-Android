@@ -7,6 +7,7 @@ import android.graphics.Bitmap.Config;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -58,6 +59,7 @@ public abstract class AndroidGame extends Activity implements Game {
         //Coordinates.screenSize = new Box(XMIN, YMIN, metrics.widthPixels, metrics.heightPixels);
 
         renderView = new AndroidFastRenderView(this, frameBuffer);
+        Log.d("RENDER VIEW DIMS", String.format("%s %s", renderView.getWidth(), renderView.getHeight()));
         graphics = new AndroidGraphics(getAssets(), frameBuffer);
         fileIO = new AndroidFileIO(this);
         audio = new AndroidAudio(this);
@@ -69,9 +71,6 @@ public abstract class AndroidGame extends Activity implements Game {
         PixmapManager.init(graphics);
 
         screen = getStartScreen();
-
-
-
 
         Log.d("GAME WIDTH COORD", String.valueOf(Coordinates.gameWidth));
 

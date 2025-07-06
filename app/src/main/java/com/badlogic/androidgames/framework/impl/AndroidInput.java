@@ -14,12 +14,8 @@ public class AndroidInput implements Input {
     KeyboardHandler keyHandler;
     TouchHandler touchHandler;
 
-    private float offsetX;
-    private float offsetY;
-    public float width;
-    public float height;
-    public float targetWidth;
-    public float targetHeight;
+    public float scaleX;
+    public float scaleY;
 
     public AndroidInput(Context context, View view, float scaleX, float scaleY) {
         accelHandler = new AccelerometerHandler(context);
@@ -30,15 +26,6 @@ public class AndroidInput implements Input {
             touchHandler = new MultiTouchHandler(view, scaleX, scaleY);        
     }
 
-    @Override
-    public void setOffsetX(float offset) {
-        offsetX = offset;
-    }
-
-    @Override
-    public void setOffsetY(float offset) {
-        offsetY = offset;
-    }
 
     @Override
     public boolean isKeyPressed(int keyCode) {
@@ -51,13 +38,23 @@ public class AndroidInput implements Input {
     }
 
     @Override
+    public boolean isTouchJustDown(int pointer) {
+        return touchHandler.isPointerJustDown(pointer);
+    }
+
+    @Override
+    public boolean isTouchJustRelease(int pointer) {
+        return touchHandler.isPointerJustReleased(pointer);
+    }
+
+    @Override
     public int getTouchX(int pointer) {
-        return touchHandler.getTouchX(pointer) / 6;
+        return touchHandler.getTouchX(pointer);
     }
 
     @Override
     public int getTouchY(int pointer) {
-        return touchHandler.getTouchY(pointer) / 6;
+        return touchHandler.getTouchY(pointer);
     }
 
     @Override
@@ -73,6 +70,28 @@ public class AndroidInput implements Input {
     @Override
     public float getAccelZ() {
         return accelHandler.getAccelZ();
+    }
+
+    @Override
+    public void setScaleX(float scaleX) {
+        this.scaleX = scaleX;
+        this.touchHandler.setScaleX(scaleX);
+    }
+
+    @Override
+    public void setScaleY(float scaleY) {
+        this.scaleY = scaleY;
+        this.touchHandler.setScaleY(scaleY);
+    }
+
+    @Override
+    public void setOffsetX(float offsetX) {
+        this.touchHandler.setOffsetX(offsetX);
+    }
+
+    @Override
+    public void setOffsetY(float offsetY) {
+        this.touchHandler.setOffsetY(offsetY);
     }
 
     @Override

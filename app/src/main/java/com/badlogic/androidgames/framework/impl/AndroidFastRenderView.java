@@ -10,6 +10,8 @@ import android.view.SurfaceView;
 
 import androidx.annotation.NonNull;
 
+import com.example.mfaella.physicsapp.Coordinates;
+
 @SuppressLint("ViewConstructor")
 public class AndroidFastRenderView extends SurfaceView implements Runnable {
 
@@ -38,7 +40,10 @@ public class AndroidFastRenderView extends SurfaceView implements Runnable {
             public void surfaceChanged(@NonNull SurfaceHolder surfaceHolder, int i, int width, int height) {
                 Log.d("WIDTH: ", String.valueOf(width));
                 final float TARGET_RATIO = 16.0f / 9.0f;
-                // Calcolo del nuovo rettangolo mantenendo l'aspect ratio
+                final int BASE_WIDTH = 320;  // Larghezza base (multiplo)
+                final int BASE_HEIGHT = 180; // Altezza base (multiplo)
+
+                // Calcola la larghezza e l'altezza in base al rapporto 16:9
                 int targetWidth, targetHeight;
                 if ((float) width / height > TARGET_RATIO) {
                     // La schermata è più larga rispetto al 16:9 -> adatta l'altezza e centra in orizzontale
@@ -49,15 +54,29 @@ public class AndroidFastRenderView extends SurfaceView implements Runnable {
                     targetWidth = width;
                     targetHeight = (int) (width / TARGET_RATIO);
                 }
+
+                // Forza targetWidth a essere un multiplo di BASE_WIDTH (320)
+                targetWidth = (targetWidth / BASE_WIDTH) * BASE_WIDTH;
+
+                // Forza targetHeight a essere un multiplo di BASE_HEIGHT (180)
+                targetHeight = (targetHeight / BASE_HEIGHT) * BASE_HEIGHT;
+
                 int offsetX = (width - targetWidth) / 2;
                 int offsetY = (height - targetHeight) / 2;
 
                 Log.d("GRAPHICS", String.valueOf(targetWidth));
-                Log.d("GRAPHICS", String.valueOf(targetHeight));                Log.d("TARGET WIDTH", String.valueOf(targetWidth));
+                Log.d("GRAPHICS", String.valueOf(targetHeight));
                 Log.d("GRAPHICS", String.valueOf(offsetX));
                 Log.d("GRAPHICS", String.valueOf(offsetY));
-                game.getInput().setOffsetX(offsetX);
-                game.getInput().setOffsetY(offsetY);
+
+                // Settare finalmente scaleX e scaleY
+                game.input.setScaleX((float) BASE_WIDTH / targetWidth);
+                game.input.setScaleY((float) BASE_HEIGHT / targetHeight);
+                game.input.setOffsetX((float) offsetX);
+                game.input.setOffsetY((float) offsetY);
+                Coordinates.scaleX = (float) BASE_WIDTH / targetWidth;
+                Coordinates.scaleY = (float) BASE_HEIGHT / targetHeight;
+
                 dstRect.set(offsetX, offsetY, offsetX + targetWidth, offsetY + targetHeight);
             }
 

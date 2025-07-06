@@ -14,4 +14,13 @@ public interface TouchHandler extends OnTouchListener {
     public int getTouchY(int pointer);
     
     public List<TouchEvent> getTouchEvents();
+
+    void setScaleX(float scaleX);
+    void setScaleY(float scaleY);
+
+    void setOffsetX(float offsetX);
+    void setOffsetY(float offsetY);
+
+    public boolean isPointerJustDown(int pointer);
+    public boolean isPointerJustReleased(int pointer);
 }

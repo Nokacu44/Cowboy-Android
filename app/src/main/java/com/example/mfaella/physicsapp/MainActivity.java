@@ -3,6 +3,9 @@ package com.example.mfaella.physicsapp;
 
 import com.badlogic.androidgames.framework.Screen;
 import com.badlogic.androidgames.framework.impl.AndroidGame;
+import com.example.mfaella.physicsapp.levels.CowboyScreen;
+import com.example.mfaella.physicsapp.levels.Level1;
+import com.example.mfaella.physicsapp.levels.MainMenu;
 
 public class MainActivity extends AndroidGame {
 
@@ -19,6 +22,6 @@ public class MainActivity extends AndroidGame {
 
     @Override
     public Screen getStartScreen() {
-        return new CowboyScreen(this);
+        return new MainMenu(this);
     }
 }

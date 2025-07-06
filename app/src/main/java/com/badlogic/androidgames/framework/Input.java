@@ -3,6 +3,7 @@ package com.badlogic.androidgames.framework;
 import java.util.List;
 
 public interface Input {
+
     public static class KeyEvent {
         public static final int KEY_DOWN = 0;
         public static final int KEY_UP = 1;
@@ -51,18 +52,24 @@ public interface Input {
     }
 
 
-    public void setOffsetX(float offset);
-    public void setOffsetY(float offset);
-
     public boolean isKeyPressed(int keyCode);
 
     public boolean isTouchDown(int pointer);
+    public boolean isTouchJustDown(int pointer);
+    public boolean isTouchJustRelease(int pointer);
     public int getTouchX(int pointer);
     public int getTouchY(int pointer);
 
     public float getAccelX();
     public float getAccelY();
     public float getAccelZ();
+
+    public void setScaleX(float scaleX);
+    public void setScaleY(float scaleY);
+
+    void setOffsetX(float offsetX);
+    void setOffsetY(float offsetY);
+
 
     public List<KeyEvent> getKeyEvents();
     public List<TouchEvent> getTouchEvents();

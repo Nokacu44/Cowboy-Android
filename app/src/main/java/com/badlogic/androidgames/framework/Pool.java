@@ -7,6 +7,10 @@ public class Pool<T> {
     public interface PoolObjectFactory<T> {
         public T createObject();
     }
+    public interface Poolable {
+        void activate();
+        void reset();
+    }
 
     private final List<T> freeObjects;
     private final PoolObjectFactory<T> factory;

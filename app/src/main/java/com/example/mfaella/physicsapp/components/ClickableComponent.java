@@ -30,8 +30,8 @@ public class ClickableComponent extends Component {
 
     @Override
     public void update(float dt) {
-        Log.d("UI", String.format("%s %s %s", bounds, input.getTouchX(0), input.getTouchY(0)));
-        if (input.isTouchDown(0) && bounds.contains(input.getTouchX(0), input.getTouchY(0))) {
+        //Log.d("UI", String.format("%s %s %s", bounds, input.getTouchX(0), input.getTouchY(0)));
+        if (input.isTouchJustDown(0) && Coordinates.isInRadius(actor.x, actor.y, input.getTouchX(0), input.getTouchY(0), 16)) {
             if (onClickCallback != null) {
                 onClickCallback.run();
             }

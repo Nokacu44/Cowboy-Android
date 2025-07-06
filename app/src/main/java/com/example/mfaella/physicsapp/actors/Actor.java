@@ -5,6 +5,7 @@ import android.util.ArrayMap;
 import androidx.annotation.NonNull;
 
 import com.badlogic.androidgames.framework.Graphics;
+import com.example.mfaella.physicsapp.Tag;
 import com.example.mfaella.physicsapp.components.Component;
 
 import java.util.List;
@@ -14,11 +15,14 @@ public class Actor {
     public float x, y, angle;
     public String name;
 
+    private int tags = 0;
+
     private final ArrayMap<Class<? extends Component>, Component> components = new ArrayMap<>();
 
     public Actor(float x, float y) {
         this.x = x;
         this.y = y;
+        angle = 0;
     }
 
     public Actor(float x, float y, List<Component> components) {
@@ -27,6 +31,7 @@ public class Actor {
         for (Component component : components) {
             addComponent(component);
         }
+        angle = 0;
     }
 
     public void update(float dt) {
@@ -48,14 +53,35 @@ public class Actor {
         return component;
     }
 
-    public <T extends Component> void removeComponent(@NonNull Class<T> componentClass) {
-        components.remove(componentClass);
+    public <T extends Component> T removeComponent(@NonNull Class<T> componentClass) {
+        return componentClass.cast(components.remove(componentClass));
+
     }
     public <T extends Component> T getComponent(@NonNull Class<T> componentClass) {
         return componentClass.cast(components.get(componentClass));
     }
     public <T extends Component> boolean hasComponent(@NonNull Class<T> componentClass) {
         return components.containsKey(componentClass);
+    }
+
+    public void addTag(Tag tag) {
+        tags |= tag.getMask();
+    }
+
+    public void removeTag(Tag tag) {
+        tags &= ~tag.getMask();
+    }
+
+    public boolean hasTags(Tag ...tags) {
+        int mask = 0;
+        for (Tag tag : tags) {
+            mask |= tag.getMask();
+        }
+        return (this.tags & mask) == mask;
+    }
+
+    public void clearTags() {
+        tags = 0;
     }
 
 }

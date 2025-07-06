@@ -16,13 +16,21 @@ import com.badlogic.androidgames.framework.Pool.PoolObjectFactory;
 
 public class MultiTouchHandler implements TouchHandler {
     boolean[] isTouching = new boolean[20];
+    boolean[] wasTouching = new boolean[20];  // stato precedente dei tocchi
+
+
     int[] touchX = new int[20];
     int[] touchY = new int[20];
+
+
     Pool<TouchEvent> touchEventPool;
     List<TouchEvent> touchEvents = new ArrayList<TouchEvent>();
     List<TouchEvent> touchEventsBuffer = new ArrayList<TouchEvent>();
     float scaleX;
     float scaleY;
+    private float offsetX;
+    private float offsetY;
+
     private static final int MAXPOOLSIZE = 100;
 
     public MultiTouchHandler(View view, float scaleX, float scaleY) {
@@ -45,19 +53,24 @@ public class MultiTouchHandler implements TouchHandler {
         int pointerIndex = event.getActionIndex();
         int pointerId = event.getPointerId(pointerIndex);
         TouchEvent touchEvent;
-
+        // Aggiorna lo stato precedente
+        System.arraycopy(isTouching, 0, wasTouching, 0, 20);
         switch (action) {
         case MotionEvent.ACTION_DOWN:
         case MotionEvent.ACTION_POINTER_DOWN:
             touchEvent = touchEventPool.newObject();
             touchEvent.type = TouchEvent.TOUCH_DOWN;
             touchEvent.pointer = pointerId;
-            touchEvent.x = touchX[pointerId] = (int) (event
-                    .getX(pointerIndex) * scaleX);
-            touchEvent.y = touchY[pointerId] = (int) (event
-                    .getY(pointerIndex) * scaleY);
+            touchEvent.x = touchX[pointerId] = (int) (((event
+                    .getX(pointerIndex) - offsetX) * scaleX));
+            touchEvent.y = touchY[pointerId] = (int) ((event
+                    .getY(pointerIndex) - offsetY)* scaleY);
             isTouching[pointerId] = true;
             touchEventsBuffer.add(touchEvent);
+
+            // Aggiorna lo stato precedente
+            wasTouching[pointerId] = false;  // Non è mai stato toccato prima
+
             break;
 
         case MotionEvent.ACTION_UP:
@@ -66,12 +79,15 @@ public class MultiTouchHandler implements TouchHandler {
             touchEvent = touchEventPool.newObject();
             touchEvent.type = TouchEvent.TOUCH_UP;
             touchEvent.pointer = pointerId;
-            touchEvent.x = touchX[pointerId] = (int) (event
-                    .getX(pointerIndex) * scaleX);
-            touchEvent.y = touchY[pointerId] = (int) (event
-                    .getY(pointerIndex) * scaleY);
+            touchEvent.x = touchX[pointerId] = (int) (((event
+                    .getX(pointerIndex) - offsetX) * scaleX));
+            touchEvent.y = touchY[pointerId] = (int) ((event
+                    .getY(pointerIndex) - offsetY)* scaleY);
             isTouching[pointerId] = false;
             touchEventsBuffer.add(touchEvent);
+
+            // Aggiorna lo stato precedente
+            wasTouching[pointerId] = true; // il puntatore è stato rilasciato ora
             break;
 
         case MotionEvent.ACTION_MOVE:
@@ -83,14 +99,17 @@ public class MultiTouchHandler implements TouchHandler {
                 touchEvent = touchEventPool.newObject();
                 touchEvent.type = TouchEvent.TOUCH_DRAGGED;
                 touchEvent.pointer = pointerId;
-                touchEvent.x = touchX[pointerId] = (int) (event
-                        .getX(pointerIndex) * scaleX);
-                touchEvent.y = touchY[pointerId] = (int) (event
-                        .getY(pointerIndex) * scaleY);
+                touchEvent.x = touchX[pointerId] = (int) (((event
+                        .getX(pointerIndex) - offsetX) * scaleX));
+                touchEvent.y = touchY[pointerId] = (int) ((event
+                        .getY(pointerIndex) - offsetY)* scaleY);
                 touchEventsBuffer.add(touchEvent);
             }
             break;
         }
+
+
+
 
         return true;
     }
@@ -139,4 +158,55 @@ public class MultiTouchHandler implements TouchHandler {
 
         return touchEvents;
     }
+
+    @Override
+    public void setScaleX(float scaleX) {
+        this.scaleX = scaleX;
+    }
+
+    @Override
+    public void setScaleY(float scaleY) {
+        this.scaleY = scaleY;
+    }
+
+    public void setOffsetX(float offsetX) {
+        this.offsetX = offsetX;
+    }
+
+
+    @Override
+    public void setOffsetY(float offsetY) {
+        this.offsetY = offsetY;
+    }
+
+    @Override
+    public synchronized boolean isPointerJustDown(int pointer) {
+        if (pointer < 0 || pointer >= 20)
+            return false;
+
+        // Il puntatore è appena stato toccato se è toccato ora e non lo era prima
+        if (isTouching[pointer] && !wasTouching[pointer]) {
+            // Dopo il primo rilevamento di un tocco, ripristina lo stato di wasTouching
+            wasTouching[pointer] = true;  // Imposta il flag per non farlo ripetere nei cicli successivi
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public synchronized boolean isPointerJustReleased(int pointer) {
+        if (pointer < 0 || pointer >= 20)
+            return false;
+
+        // Il puntatore è appena stato rilasciato se non è più toccato ora, ma lo era prima
+        if (!isTouching[pointer] && wasTouching[pointer]) {
+            // Dopo il rilascio, ripristina lo stato di wasTouching
+            wasTouching[pointer] = false;  // Imposta il flag per non farlo ripetere nei cicli successivi
+            return true;
+        }
+
+        return false;
+    }
+
 }

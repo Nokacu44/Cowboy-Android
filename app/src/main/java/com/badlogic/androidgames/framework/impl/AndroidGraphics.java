@@ -3,6 +3,7 @@ package com.badlogic.androidgames.framework.impl;
 import java.io.IOException;
 import java.io.InputStream;
 
+import android.animation.ValueAnimator;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -12,20 +13,27 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.PathEffect;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.view.animation.AccelerateDecelerateInterpolator;
 
 import com.badlogic.androidgames.framework.Graphics;
 import com.badlogic.androidgames.framework.Pixmap;
+import com.google.fpl.liquidfun.Vec2;
 
 public class AndroidGraphics implements Graphics {
     AssetManager assets;
     Bitmap frameBuffer;
-    protected Canvas canvas;
+    public Canvas canvas;
     Paint paint;
     Rect srcRect = new Rect();
     RectF dstRect = new RectF();
     private final int SCALE_FACTOR = 6;
+
+    private float currentTranslateX;
+    private float currentTranslateY;
+    private float currentScale;
 
     public AndroidGraphics(AssetManager assets, Bitmap frameBuffer) {
         this.assets = assets;
@@ -177,4 +185,9 @@ public class AndroidGraphics implements Graphics {
     public int getHeight() {
         return frameBuffer.getHeight() / SCALE_FACTOR;
     }
+
+    public void zoom(float factor) {
+        this.canvas.scale(factor, factor);
+    }
+
 }

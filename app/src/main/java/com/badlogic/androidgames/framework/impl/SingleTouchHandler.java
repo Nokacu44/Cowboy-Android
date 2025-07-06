@@ -21,6 +21,9 @@ public class SingleTouchHandler implements TouchHandler {
 
     float scaleX;
     float scaleY;
+
+    private float offsetX;
+    private float offsetY;
     
     public SingleTouchHandler(View view, float scaleX, float scaleY) {
         PoolObjectFactory<TouchEvent> factory = TouchEvent::new;
@@ -56,8 +59,10 @@ public class SingleTouchHandler implements TouchHandler {
                 v.performClick();
             }
 
-            touchEvent.x = touchX = (int)(event.getX() * scaleX);
-            touchEvent.y = touchY = (int)(event.getY() * scaleY);
+            touchEvent.x = touchX= (int) ((event
+                    .getX() - offsetX) * scaleX);
+            touchEvent.y = touchY = (int) ((event
+                    .getY() - offsetY )* scaleY);
             touchEventsBuffer.add(touchEvent);                        
             
             return true;
@@ -100,4 +105,37 @@ public class SingleTouchHandler implements TouchHandler {
             return touchEvents;
         }
     }
+
+    @Override
+    public void setScaleX(float scaleX) {
+        this.scaleX = scaleX;
+    }
+
+    @Override
+    public void setScaleY(float scaleY) {
+        this.scaleY = scaleY;
+    }
+
+    @Override
+    public void setOffsetX(float offsetX) {
+        this.offsetX = offsetX;
+    }
+
+
+    @Override
+    public void setOffsetY(float offsetY) {
+        this.offsetY = offsetY;
+    }
+
+    @Override
+    public boolean isPointerJustDown(int pointer) {
+        return false;
+    }
+
+    @Override
+    public boolean isPointerJustReleased(int pointer) {
+        return false;
+    }
+
+
 }
