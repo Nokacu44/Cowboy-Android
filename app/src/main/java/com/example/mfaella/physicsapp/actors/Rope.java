@@ -12,6 +12,7 @@ import com.example.mfaella.physicsapp.components.PhysicsComponent;
 import com.example.mfaella.physicsapp.components.SpriteComponent;
 import com.example.mfaella.physicsapp.events.GameEventData;
 import com.example.mfaella.physicsapp.events.GameEvents;
+import com.example.mfaella.physicsapp.levels.GameLevel;
 import com.example.mfaella.physicsapp.managers.PixmapManager;
 import com.google.fpl.liquidfun.BodyType;
 import com.google.fpl.liquidfun.MassData;
@@ -19,6 +20,7 @@ import com.google.fpl.liquidfun.Vec2;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.function.BiFunction;
 
 public class Rope extends Actor{
@@ -29,11 +31,12 @@ public class Rope extends Actor{
     private final ArrayList<Actor> segments = new ArrayList<>();
     private final Actor endActor;
 
-    public Rope(float x, float y, int numSegments, RopeType ropeType, BiFunction<Float, Float, Actor> endActorFactory) {
-        super(x, y);
+    public Rope(GameLevel level, float x, float y, int numSegments, RopeType ropeType, ActorFactory endActorFactory) {
+        super(level, x, y);
 
         // Primo segmento kinematic (ancorato in alto)
         PhysicsComponent physicsComponent = new PhysicsComponent(
+                level,
                 BodyType.kinematicBody,
                 Coordinates.pixelsToMetersLengthsX(3f),
                 Coordinates.pixelsToMetersLengthsY(4f)
@@ -48,6 +51,7 @@ public class Rope extends Actor{
         // Segmenti intermedi
         for (int i = 0; i < numSegments; i++) {
             PhysicsComponent comp = new PhysicsComponent(
+                    level,
                     BodyType.dynamicBody,
                     Coordinates.pixelsToMetersLengthsX(3f),
                     Coordinates.pixelsToMetersLengthsY(4f),
@@ -57,6 +61,7 @@ public class Rope extends Actor{
             float ay = lastY + (3 * i);
 
             Actor segment = new Actor(
+                    level,
                     x,
                     ay,
                     List.of(
@@ -86,7 +91,7 @@ public class Rope extends Actor{
         }
 
         // Actor finale (generico)
-        endActor = endActorFactory.apply(x, lastY);
+        endActor = endActorFactory.create(level, x, lastY);
         PhysicsComponent endComp = endActor.getComponent(PhysicsComponent.class);
         if (endComp == null) {
             throw new IllegalArgumentException("L'actor finale deve avere un PhysicsComponent");

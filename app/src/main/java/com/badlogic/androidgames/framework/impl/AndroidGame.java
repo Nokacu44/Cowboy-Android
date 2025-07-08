@@ -19,6 +19,7 @@ import com.badlogic.androidgames.framework.Input;
 import com.badlogic.androidgames.framework.Screen;
 import com.example.mfaella.physicsapp.Box;
 import com.example.mfaella.physicsapp.Coordinates;
+import com.example.mfaella.physicsapp.managers.LevelManager;
 import com.example.mfaella.physicsapp.managers.PixmapManager;
 
 public abstract class AndroidGame extends Activity implements Game {
@@ -28,6 +29,7 @@ public abstract class AndroidGame extends Activity implements Game {
     protected Input input;
     protected FileIO fileIO;
     protected Screen screen;
+    protected LevelManager levelManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,6 +66,7 @@ public abstract class AndroidGame extends Activity implements Game {
         fileIO = new AndroidFileIO(this);
         audio = new AndroidAudio(this);
         input = new AndroidInput(this, renderView, scaleX, scaleY);
+        levelManager = new LevelManager(this);
 
         Coordinates.gameWidth = graphics.getWidth();
         Coordinates.gameHeight = graphics.getHeight();
@@ -117,6 +120,11 @@ public abstract class AndroidGame extends Activity implements Game {
         screen.update(0);
         this.screen = screen;
     }
+
+    public LevelManager getLevelManager() {
+        return levelManager;
+    }
+
     public Screen getCurrentScreen() {
         return screen;
     }

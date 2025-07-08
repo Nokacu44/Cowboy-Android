@@ -14,7 +14,7 @@ public class ClickableComponent extends Component {
 
     private final RectF bounds;
     private final Input input;
-    private final OnClickCallback onClickCallback;
+    private OnClickCallback onClickCallback;
 
     public ClickableComponent(Input input, RectF bounds, OnClickCallback onClickCallback) {
         this.input = input;
@@ -22,16 +22,19 @@ public class ClickableComponent extends Component {
         this.bounds = bounds;
     }
 
-
     @Override
     public void initialize(Actor actor) {
         this.actor = actor;
     }
 
+    public void setOnClickCallback(OnClickCallback callback) {
+        this.onClickCallback = callback;
+    }
     @Override
     public void update(float dt) {
         //Log.d("UI", String.format("%s %s %s", bounds, input.getTouchX(0), input.getTouchY(0)));
-        if (input.isTouchJustDown(0) && Coordinates.isInRadius(actor.x, actor.y, input.getTouchX(0), input.getTouchY(0), 16)) {
+        //if (Coordinates.isInRadius(actor.x, actor.y, input.getTouchX(0), input.getTouchY(0), 16) && input.isTouchJustDown(0)  ) {
+        if (Coordinates.isInRect(input.getTouchX(0), input.getTouchY(0), bounds) && input.isTouchJustDown(0)  ) {
             if (onClickCallback != null) {
                 onClickCallback.run();
             }

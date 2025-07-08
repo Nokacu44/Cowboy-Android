@@ -3,6 +3,7 @@ package com.example.mfaella.physicsapp.managers;
 import com.example.mfaella.physicsapp.MyContactListener;
 import com.example.mfaella.physicsapp.PhysicsTaskQueue;
 import com.google.fpl.liquidfun.ContactListener;
+import com.google.fpl.liquidfun.Joint;
 import com.google.fpl.liquidfun.Vec2;
 import com.google.fpl.liquidfun.World;
 
@@ -15,25 +16,45 @@ public class PhysicsManager {
     private static final int POSITION_ITERATIONS = 6;
     private static final int PARTICLE_ITERATIONS = 4;
 
-    public static final Vec2 GRAVITY = new Vec2(0f, 16f);
-    public static final World physicsWorld = new World(GRAVITY.getX(), GRAVITY.getY());
-    private static final PhysicsTaskQueue physicsQueue = new PhysicsTaskQueue();
+    public final World physicsWorld;
+    private final PhysicsTaskQueue physicsQueue;
+    private final ContactListener contactListener;
 
-    private final static ContactListener contactListener = new MyContactListener();
+    private boolean destroyed = false;
 
-    static {
-        physicsWorld.setContactListener(contactListener);
+    public Vec2 gravity;
+
+    public PhysicsManager(Vec2 gravity) {
+        this.gravity = gravity;
+        this.physicsWorld = new World(gravity.getX(), gravity.getY());
+        this.physicsQueue = new PhysicsTaskQueue();
+        this.contactListener = new MyContactListener();
+        this.physicsWorld.setContactListener(contactListener);
     }
 
-    public static void updatePhysicsWorld(float deltaTime) {
+    public void updatePhysicsWorld(float deltaTime) {
+        if (destroyed) {
+            throw new IllegalStateException("PhysicsEngine is destroyed and cannot be updated.");
+        }
         physicsWorld.step(deltaTime, VELOCITY_ITERATIONS, POSITION_ITERATIONS, PARTICLE_ITERATIONS);
     }
 
-    public static void executeAllPhysicsTasks() {
+    public void executeAllPhysicsTasks() {
+        if (destroyed) return;
         physicsQueue.executeAll();
     }
 
-    public static void postTask(Runnable task) {
+    public void postTask(Runnable task) {
+        if (destroyed) return;
         physicsQueue.post(task);
+    }
+
+
+    public void dispose() {
+        if (destroyed) return;
+        physicsWorld.delete();
+        // Eventuale cleanup di altre risorse (se serve)
+        // Ad esempio: particle systems, se li usi
+        destroyed = true;
     }
 }

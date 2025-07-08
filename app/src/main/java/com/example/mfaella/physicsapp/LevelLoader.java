@@ -67,10 +67,10 @@ public class LevelLoader {
 
                     switch (identifier) {
                         case "Bandit":
-                            actors.add(new Bandit(x, y));
+                            actors.add(new Bandit(levelInstance, x, y));
                             break;
                         case "Ground":
-                            actors.add(new Actor(x, y, List.of(
+                            actors.add(new Actor(levelInstance, x, y, List.of(
                                     new SpriteComponent(
                                             PixmapManager.getPixmap("environment/ground.png"),
                                             320, 4, 1
@@ -78,7 +78,7 @@ public class LevelLoader {
                             )));
                             break;
                         case "Gallows":
-                            actors.add(new Actor(x, y, List.of(
+                            actors.add(new Actor(levelInstance, x, y, List.of(
                                     new SpriteComponent(
                                             PixmapManager.getPixmap("environment/gallows.png"),
                                             32, 40, 1
@@ -86,11 +86,12 @@ public class LevelLoader {
                             )));
                             break;
                         case "Arc_Platform":
-                            actors.add(new Actor(x, y, List.of(
+                            actors.add(new Actor(levelInstance, x, y, List.of(
                                     new SpriteComponent(
                                             PixmapManager.getPixmap("environment/arc_platform.png")
                                     ),
                                     new PhysicsComponent(
+                                            levelInstance,
                                             BodyType.staticBody,
                                             Coordinates.pixelsToMetersLengthsX(16),
                                             Coordinates.pixelsToMetersLengthsY(32)
@@ -98,11 +99,12 @@ public class LevelLoader {
                             )));
                             break;
                         case "Platform":
-                            actors.add(new Actor(x, y, List.of(
+                            actors.add(new Actor(levelInstance, x, y, List.of(
                                     new SpriteComponent(
                                             PixmapManager.getPixmap("environment/platform_0.png")
                                     ),
                                     new PhysicsComponent(
+                                            levelInstance,
                                             BodyType.staticBody,
                                             Coordinates.pixelsToMetersLengthsX(38),
                                             Coordinates.pixelsToMetersLengthsY(6f)
@@ -110,14 +112,16 @@ public class LevelLoader {
                             )));
                             break;
                         case "Hangman":
-                            actors.add(new Rope(x, y, 4, Rope.RopeType.SOFT, Hangman::new));
+                            actors.add(new Rope(levelInstance, x, y, 4, Rope.RopeType.SOFT, Hangman::new));
                             break;
                         case "Collision":
                             actors.add(new Actor(
+                                    levelInstance,
                                     x,
                                     y,
                                     List.of(
                                             new PhysicsComponent(
+                                                    levelInstance,
                                                     BodyType.staticBody,
                                                     Coordinates.pixelsToMetersLengthsX(width),
                                                     Coordinates.pixelsToMetersLengthsY(height)
@@ -126,20 +130,21 @@ public class LevelLoader {
                             ));
                             break;
                         case "Crate":
-                            actors.add(new Crate(x, y));
+                            actors.add(new Crate(levelInstance, x, y));
                             break;
 
                         case "DeflectionTry":
-                            actors.add(new DeflectionTry(x, y));
+                            actors.add(new DeflectionTry(levelInstance, x, y));
                             break;
 
                         case "Rock":
-                            actors.add(new Actor(x, y, List.of(
+                            actors.add(new Actor(levelInstance, x, y, List.of(
                                     new SpriteComponent(
                                             PixmapManager.getPixmap("environment/rock1.png"),
                                             18, 9, 1
                                     ),
                                     new PhysicsComponent(
+                                            levelInstance,
                                             BodyType.dynamicBody,
                                             Coordinates.pixelsToMetersLengthsX(18),
                                             Coordinates.pixelsToMetersLengthsY(7.5f)
@@ -148,7 +153,7 @@ public class LevelLoader {
                             break;
 
                         case "PlayerStart":
-                            player = new Player(x, y, levelInstance.game.getInput());
+                            player = new Player(levelInstance, x, y, levelInstance.game.getInput());
                             actors.add(player);
                             break;
 
@@ -163,11 +168,6 @@ public class LevelLoader {
             Log.e("LevelLoader", "Errore caricamento livello", e);
         }
 
-        // UI
-        if (player != null) {
-            actors.add(new Button(levelInstance, 32, 158, "ui/bang_btn.png",player.gun::shoot));
-            actors.add(new Rope(305, 0, 6, Rope.RopeType.HARD, Clock::new));
-        }
         return actors;
     }
 

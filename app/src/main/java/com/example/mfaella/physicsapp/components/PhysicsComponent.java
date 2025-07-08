@@ -6,6 +6,7 @@ import com.badlogic.androidgames.framework.Graphics;
 import com.example.mfaella.physicsapp.CollisionHandler;
 import com.example.mfaella.physicsapp.Coordinates;
 import com.example.mfaella.physicsapp.actors.Actor;
+import com.example.mfaella.physicsapp.levels.GameLevel;
 import com.example.mfaella.physicsapp.managers.PhysicsManager;
 import com.google.fpl.liquidfun.Body;
 import com.google.fpl.liquidfun.BodyDef;
@@ -44,11 +45,11 @@ public class PhysicsComponent extends Component {
 
     private final ArrayList<JointInfo> joints = new ArrayList<>();
 
-    public PhysicsComponent(BodyType bodyType, float width, float height, float density, CollisionHandler collisionHandler) {
+    public PhysicsComponent(GameLevel level, BodyType bodyType, float width, float height, float density, CollisionHandler collisionHandler) {
         BodyDef bodyDef = new BodyDef();
         bodyDef.setType(bodyType);
 
-        body = PhysicsManager.physicsWorld.createBody(bodyDef);
+        body = level.physicsManager.physicsWorld.createBody(bodyDef);
         body.setSleepingAllowed(false);
         bodyDef.setPosition(Coordinates.toSimulationX(-1), Coordinates.toSimulationY(-1));
         PolygonShape box = new PolygonShape();
@@ -75,20 +76,20 @@ public class PhysicsComponent extends Component {
     }
 
     public PhysicsComponent(
-            BodyType bodyType, float width, float height, float density
+            GameLevel level, BodyType bodyType, float width, float height, float density
     ) {
-        this(bodyType, width, height, density, null);
+        this(level, bodyType, width, height, density, null);
     }
 
     public PhysicsComponent(
-            BodyType bodyType, float width, float height
+            GameLevel level, BodyType bodyType, float width, float height
     ) {
-        this(bodyType, width, height, 0.5f, null);
+        this(level, bodyType, width, height, 0.5f, null);
     }
     public PhysicsComponent(
-            BodyType bodyType, float width, float height, CollisionHandler handler
+            GameLevel level, BodyType bodyType, float width, float height, CollisionHandler handler
     ) {
-        this(bodyType, width, height, 0.5f, handler);
+        this(level, bodyType, width, height, 0.5f, handler);
     }
 
     @Override
@@ -140,7 +141,7 @@ public class PhysicsComponent extends Component {
 
 
         // Crea il joint
-        Joint joint = PhysicsManager.physicsWorld.createJoint(jointDef);
+        Joint joint = level.physicsManager.physicsWorld.createJoint(jointDef);
         registerJoint(joint, other);
 
 
@@ -167,7 +168,7 @@ public class PhysicsComponent extends Component {
         jointDef.setFrequencyHz(4.0f);
 
         // Crea il joint
-        Joint joint = PhysicsManager.physicsWorld.createJoint(jointDef);
+        Joint joint = level.physicsManager.physicsWorld.createJoint(jointDef);
         registerJoint(joint, other);
 
 
@@ -200,7 +201,7 @@ public class PhysicsComponent extends Component {
         }
 
         // Crea il joint
-        Joint joint = PhysicsManager.physicsWorld.createJoint(jointDef);
+        Joint joint = level.physicsManager.physicsWorld.createJoint(jointDef);
         registerJoint(joint, other);
 
         jointDef.delete();
@@ -210,7 +211,7 @@ public class PhysicsComponent extends Component {
         for (JointInfo info : joints) {
             info.other.joints.removeIf(j -> j.joint == info.joint);
             Log.d("ROPE", "sto eliminando");
-            PhysicsManager.physicsWorld.destroyJoint(info.joint);
+            level.physicsManager.physicsWorld.destroyJoint(info.joint);
         }
         joints.clear();
         Log.d("ROPE", String.valueOf(joints.size()));

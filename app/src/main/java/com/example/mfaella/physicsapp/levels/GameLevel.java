@@ -1,24 +1,34 @@
 package com.example.mfaella.physicsapp.levels;
 
-import android.util.Log;
-
 import com.badlogic.androidgames.framework.Game;
 import com.badlogic.androidgames.framework.Graphics;
 import com.badlogic.androidgames.framework.Input;
 import com.badlogic.androidgames.framework.Screen;
 import com.example.mfaella.physicsapp.LevelLoader;
 import com.example.mfaella.physicsapp.actors.Actor;
-import com.example.mfaella.physicsapp.components.PhysicsComponent;
-import com.example.mfaella.physicsapp.managers.AudioManager;
+import com.example.mfaella.physicsapp.actors.ui.LevelFailed;
+import com.example.mfaella.physicsapp.actors.ui.LevelWin;
+import com.example.mfaella.physicsapp.events.GameEvents;
 import com.example.mfaella.physicsapp.managers.CinematicManager;
 import com.example.mfaella.physicsapp.managers.PhysicsManager;
-import com.google.fpl.liquidfun.World;
+import com.example.mfaella.physicsapp.managers.TimerManager;
+import com.google.fpl.liquidfun.Vec2;
 
 import java.util.ArrayList;
 
-public class GameLevel extends Screen {
+public abstract class GameLevel extends Screen {
 
-//    public final PhysicsManager physicsManager = new PhysicsManager();
+    protected boolean active = true;
+    protected boolean inputActive = true;
+
+    protected boolean hangmanDead = false;
+    public boolean finished = false;
+    protected boolean failed = false;
+
+    public final LevelRulesController levelRulesController;
+    public final TimerManager timerManager = new TimerManager();
+    public final PhysicsManager physicsManager = new PhysicsManager(new Vec2(0f, 16f));
+    public final GameEvents events = new GameEvents();
 //    public final CinematicManager cinematicManager = new CinematicManager();
 //    public final AudioManager audioManager = new AudioManager();
 
@@ -27,12 +37,13 @@ public class GameLevel extends Screen {
     protected void loadFromFile(String fileName) {
         actors = (ArrayList<Actor>) new LevelLoader(game.getFileIO()).loadActors(this, fileName);
         for (int i = 0; i < 60; i++) {
-            PhysicsManager.updatePhysicsWorld(1/60f);
+            physicsManager.updatePhysicsWorld(1/60f);
         }
     }
 
     public GameLevel(Game game) {
         super(game);
+
         // la GC dava problemi dopo un pò quindi lo salvo
         // TODO: inserire nel physics manager
         //PhysicsManager.physicsWorld.setContactListener(contactListener);
@@ -42,12 +53,25 @@ public class GameLevel extends Screen {
         //GameEvents.connect(GameEvents.EventType.SHOOT, (data) -> CinematicManager.shootSlowMotion());
 
         // Level Events
+        levelRulesController = new LevelRulesController(events, timerManager, result -> {
+            finished = true;
+            if (result.victory) {
+                addActor(new LevelWin(this, result.stars));
+            } else {
+                addActor(new LevelFailed(this));
+            }
+        });
 
     }
 
 
+    public void input(Input input) {
+        if (!active || !inputActive) return;
+    }
+
     @Override
     public void update(float deltaTime) {
+        if (!active) return;
 //        CinematicManager.camera.update(deltaTime);
 
 //        AndroidGraphics graphics = (AndroidGraphics) game.getGraphics();
@@ -64,25 +88,26 @@ public class GameLevel extends Screen {
 //
 //        physicsWorld.setGravity(acturalGravity.getX(), acturalGravity.getY());
 
-        PhysicsManager.updatePhysicsWorld(deltaTime);
-        PhysicsManager.executeAllPhysicsTasks();
+        physicsManager.updatePhysicsWorld(deltaTime);
+        physicsManager.executeAllPhysicsTasks();
 
         for (int i = 0; i < actors.size(); ++i) {
             actors.get(i).update(deltaTime);
         }
 
-        Input inp = game.getInput();
-        if (inp.isTouchDown(0)) {
-            float x = (float) inp.getTouchX(0);
-            float y = (float) inp.getTouchY(0);
-            Log.d("INPUT: ", String.format("Position %s,%s", x, y));
-        }
-        if (inp.isTouchJustRelease(0)) {
-            Log.d("INPUT ", "JUST RELEASE");
-        }
-        if (inp.isTouchJustDown(0)) {
-            Log.d("INPUT ", "JUST DOWN");
-        }
+        input(game.getInput());
+
+//        if (inp.isTouchDown(0)) {
+//            float x = (float) inp.getTouchX(0);
+//            float y = (float) inp.getTouchY(0);
+//            Log.d("INPUT: ", String.format("Position %s,%s", x, y));
+//        }
+//        if (inp.isTouchJustRelease(0)) {
+//            Log.d("INPUT ", "JUST RELEASE");
+//        }
+//        if (inp.isTouchJustDown(0)) {
+//            Log.d("INPUT ", "JUST DOWN");
+//        }
     }
 
     @Override
@@ -105,8 +130,13 @@ public class GameLevel extends Screen {
 
     }
 
+    public void addActor(Actor actor) {
+        this.actors.add(actor);
+    }
+
     @Override
     public void dispose() {
-        actors.clear();
+        timerManager.cancelAll();
+        physicsManager.dispose();
     }
 }

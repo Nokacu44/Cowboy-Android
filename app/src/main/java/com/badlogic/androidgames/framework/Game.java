@@ -1,5 +1,7 @@
 package com.badlogic.androidgames.framework;
 
+import com.example.mfaella.physicsapp.managers.LevelManager;
+
 public interface Game {
     public Input getInput();
 
@@ -14,4 +16,6 @@ public interface Game {
     public Screen getCurrentScreen();
 
     public Screen getStartScreen();
+
+    public LevelManager getLevelManager();
 }

@@ -1,46 +1,57 @@
 package com.example.mfaella.physicsapp.events;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-public abstract class GameEvents {
+public class GameEvents {
+
     public enum EventType {
         GAME_STARTED,
         BEGIN_AIM,
         END_AIM,
         SHOOT,
+        BANG_BUTTON_PRESSED,
         ROPE_CUT,
+        HANGMAN_DEAD,
+        OUT_OF_AMMO,
+        TIMEOUT
     }
 
-    private static final Map<EventType, List<Consumer<GameEventData>>> eventListeners = new HashMap<>();
-    private static final GameEventData eventData = new GameEventData();
+    private final Map<EventType, List<Consumer<GameEventData>>> eventListeners;
+    private final GameEventData eventData;
 
-    static {
+    public GameEvents() {
+        eventListeners = new EnumMap<>(EventType.class);
         for (EventType event : EventType.values()) {
             eventListeners.put(event, new ArrayList<>());
         }
+        eventData = new GameEventData();
     }
 
-    public static void connect(EventType event, Consumer<GameEventData> listener) {
+    public void connect(EventType event, Consumer<GameEventData> listener) {
         Objects.requireNonNull(eventListeners.get(event)).add(listener);
     }
 
-    public static void disconnect(EventType event, Consumer<GameEventData> listener) {
+    public void disconnect(EventType event, Consumer<GameEventData> listener) {
         Objects.requireNonNull(eventListeners.get(event)).remove(listener);
     }
 
-    public static void clearListeners() {
-        eventListeners.clear();
+    public void clearListeners() {
+        for (List<Consumer<GameEventData>> listeners : eventListeners.values()) {
+            listeners.clear();
+        }
     }
 
-    public static void emit(EventType event, Object... data) {
+    public void emit(EventType event, Object... data) {
         eventData.setData(data);
-        if (eventListeners.containsKey(event)) {
-            for (Consumer<GameEventData> listener : Objects.requireNonNull(eventListeners.get(event))) {
+        List<Consumer<GameEventData>> listeners = eventListeners.get(event);
+        if (listeners != null) {
+            for (Consumer<GameEventData> listener : listeners) {
                 listener.accept(eventData);
             }
         }

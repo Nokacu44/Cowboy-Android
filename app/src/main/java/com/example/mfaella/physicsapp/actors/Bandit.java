@@ -9,6 +9,7 @@ import com.example.mfaella.physicsapp.CollisionHandler;
 import com.example.mfaella.physicsapp.Coordinates;
 import com.example.mfaella.physicsapp.components.PhysicsComponent;
 import com.example.mfaella.physicsapp.components.SpriteComponent;
+import com.example.mfaella.physicsapp.levels.GameLevel;
 import com.example.mfaella.physicsapp.managers.PhysicsManager;
 import com.example.mfaella.physicsapp.managers.PixmapManager;
 import com.google.fpl.liquidfun.Body;
@@ -28,27 +29,39 @@ public class Bandit extends Actor {
 
     PhysicsComponent physicsComponent;
 
-    public Bandit(float x, float y) {
-        super(x, y);
-        addComponent(new SpriteComponent(PixmapManager.getPixmap("characters/bandit.png")));
+    public Bandit(GameLevel level, float x, float y) {
+        super(level, x, y);
+        addComponent(new SpriteComponent(PixmapManager.getPixmap("characters/bandit_sheet.png"), 24, 19, 2));
+        getComponent(SpriteComponent.class).setAnimating(false);
 
         CollisionHandler collisionHandler = (otherActor, myBody, otherBody) -> {
             if (otherActor instanceof Crate) {
                 showDeathStatus();
-                new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                getComponent(SpriteComponent.class).setCurrentFrame(1);
+                level.timerManager.scheduleOnce(() -> {
                     shoot();
                     alertActor.getComponent(SpriteComponent.class).hide();
                 }, 500);
             }
+            if (otherActor instanceof Bullet) {
+                showDeathStatus();
+                getComponent(SpriteComponent.class).setCurrentFrame(1);
+                level.timerManager.scheduleOnce(() -> {
+                    shoot = false;
+                    alertActor.getComponent(SpriteComponent.class).hide();
+                }, 500);
+            }
         };
-        physicsComponent = new PhysicsComponent(BodyType.dynamicBody, Coordinates.pixelsToMetersLengthsX(4f), Coordinates.pixelsToMetersLengthsX(19f), 5f, collisionHandler);
+        physicsComponent = new PhysicsComponent(level, BodyType.dynamicBody, Coordinates.pixelsToMetersLengthsX(4f), Coordinates.pixelsToMetersLengthsX(19f), 5f, collisionHandler);
         addComponent(physicsComponent);
 
-        bullet = new Bullet();
+        bullet = new Bullet(level);
         bullet.x = x;
         bullet.y = y;
-        alertActor = new Actor(x, y - 16, List.of(new SpriteComponent(PixmapManager.getPixmap("ui/status_icons.png"), 11, 12, 2)));
+        alertActor = new Actor(level, x, y - 16, List.of(new SpriteComponent(PixmapManager.getPixmap("ui/status_icons.png"), 11, 12, 2)));
         alertActor.getComponent(SpriteComponent.class).hide();
+        alertActor.getComponent(SpriteComponent.class).setAnimating(false);
+
     }
 
 
@@ -59,7 +72,6 @@ public class Bandit extends Actor {
 
     public void showDeathStatus() {
         alertActor.getComponent(SpriteComponent.class).setCurrentFrame(1);
-        alertActor.getComponent(SpriteComponent.class).setLooping(false);
         alertActor.getComponent(SpriteComponent.class).show();
     }
 
@@ -82,7 +94,7 @@ public class Bandit extends Actor {
     @Override
     public void update(float dt) {
         super.update(dt);
-        PhysicsManager.physicsWorld.rayCast(new RayCastCallback() {
+        level.physicsManager.physicsWorld.rayCast(new RayCastCallback() {
             @Override
             public float reportFixture(Fixture fixture, Vec2 point, Vec2 normal, float fraction) {
 
@@ -95,7 +107,7 @@ public class Bandit extends Actor {
                 showAlertStatus();
 
                 // Poi spara
-                new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                level.timerManager.scheduleOnce(() -> {
                     shoot();
                     alertActor.getComponent(SpriteComponent.class).hide();
                 }, 500);

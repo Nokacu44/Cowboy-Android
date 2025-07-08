@@ -8,6 +8,7 @@ import com.example.mfaella.physicsapp.Coordinates;
 import com.example.mfaella.physicsapp.Deflection;
 import com.example.mfaella.physicsapp.Tag;
 import com.example.mfaella.physicsapp.events.GameEvents;
+import com.example.mfaella.physicsapp.levels.GameLevel;
 import com.example.mfaella.physicsapp.managers.PhysicsManager;
 import com.example.mfaella.physicsapp.managers.PixmapManager;
 import com.example.mfaella.physicsapp.components.PhysicsComponent;
@@ -25,23 +26,27 @@ public class Bullet extends Actor implements Pool.Poolable {
 
     private Vec2 lastVelocity;
 
-    public Bullet() {
-        super(-10, -10);
+    public Bullet(GameLevel level) {
+        super(level, -10, -10);
         addComponent(new SpriteComponent(PixmapManager.getPixmap("guns/bullet.png")));
-        physicsComponent = addComponent(new PhysicsComponent(BodyType.dynamicBody, Coordinates.pixelsToMetersLengthsX(1), Coordinates.pixelsToMetersLengthsY(2), 8f,
+        physicsComponent = addComponent(new PhysicsComponent(level, BodyType.dynamicBody, Coordinates.pixelsToMetersLengthsX(1), Coordinates.pixelsToMetersLengthsY(2), 8f,
                 (otherActor, myBody, otherBody) -> {
                     lastVelocity = myBody.getLinearVelocity();
 
+                    if (otherActor instanceof Hangman) {
+                        // Per dare una spinta iniziale almeno per un frame
+                        level.timerManager.scheduleOnce(this::reset, 5);
+                    }
                     Log.d("VELOCITY", String.valueOf(myBody.getLinearVelocity().getX()));
                     if (otherActor.hasTags(Tag.ROPE_SEGMENT) && !otherActor.hasTags(Tag.INVINCIBLE)) {
                         PhysicsComponent comp = otherActor.getComponent(PhysicsComponent.class);
-                        GameEvents.emit(GameEvents.EventType.ROPE_CUT);
+                        level.events.emit(GameEvents.EventType.ROPE_CUT);
 
-                        PhysicsManager.postTask(() -> {
+                        level.physicsManager.postTask(() -> {
                             comp.clearJoints();
                             comp.body.setActive(false);
                             otherActor.getComponent(SpriteComponent.class).hide();
-                            this.removeComponent(SpriteComponent.class);
+                            reset();
                         });
                     } else if (otherActor instanceof Deflection) {
                         myBody.setLinearVelocity(new Vec2(0, 0));
@@ -79,7 +84,7 @@ public class Bullet extends Actor implements Pool.Poolable {
     public void shoot(float dirX, float dirY) {
         physicsComponent.body.applyLinearImpulse(new Vec2((dirX * 16 / 250 ) , (dirY * 16 / 250) ), physicsComponent.body.getWorldCenter(), true);
         Log.d("VELOCITY", String.valueOf(physicsComponent.body.getLinearVelocity().getX()));
-
+        level.timerManager.scheduleOnce(this::reset, 3000);
     }
 
     @Override
@@ -89,20 +94,24 @@ public class Bullet extends Actor implements Pool.Poolable {
         Vec2 center = physicsComponent.body.getWorldCenter();
         float x2 = x + 8f * (float) Math.cos(this.angle);
         float y2 = y + 8f * (float) Math.sin(this.angle);
-        PhysicsManager.physicsWorld.rayCast(rayCastCallback,  center.getX(), center.getY(), Coordinates.toSimulationX(x2), Coordinates.toSimulationY(y2));
+        level.physicsManager.physicsWorld.rayCast(rayCastCallback,  center.getX(), center.getY(), Coordinates.toSimulationX(x2), Coordinates.toSimulationY(y2));
     }
 
     @Override
     public void activate() {
         physicsComponent.body.setAwake(true);
         physicsComponent.body.setActive(true);
+        getComponent(SpriteComponent.class).show();
 
     }
+
+
 
     @Override
     public void reset() {
         physicsComponent.body.setAwake(false);
         physicsComponent.body.setActive(false);
+        getComponent(SpriteComponent.class).hide();
         physicsComponent.body.setTransform(0, 0, 0);
         x = 0;
         y = 0;

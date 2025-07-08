@@ -7,11 +7,13 @@ import androidx.annotation.NonNull;
 import com.badlogic.androidgames.framework.Graphics;
 import com.example.mfaella.physicsapp.Tag;
 import com.example.mfaella.physicsapp.components.Component;
+import com.example.mfaella.physicsapp.levels.GameLevel;
 
 import java.util.List;
 
 public class Actor {
 
+    public GameLevel level;
     public float x, y, angle;
     public String name;
 
@@ -19,13 +21,12 @@ public class Actor {
 
     private final ArrayMap<Class<? extends Component>, Component> components = new ArrayMap<>();
 
-    public Actor(float x, float y) {
-        this.x = x;
-        this.y = y;
-        angle = 0;
+    public Actor(GameLevel level, float x, float y) {
+        this(level, x, y, List.of());
     }
 
-    public Actor(float x, float y, List<Component> components) {
+    public Actor(GameLevel level, float x, float y, List<Component> components) {
+        this.level = level;
         this.x = x;
         this.y = y;
         for (Component component : components) {
@@ -50,6 +51,7 @@ public class Actor {
         components.put(component.getClass(), component);
         component.initialize(this);
         component.actor = this;
+        component.level = this.level;
         return component;
     }
 

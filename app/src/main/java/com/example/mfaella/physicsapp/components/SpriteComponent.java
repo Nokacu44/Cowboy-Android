@@ -16,6 +16,7 @@ public class SpriteComponent extends Component {
 
     private boolean visible = true;
     private boolean looping = true;
+    private boolean animating = true;
 
     public SpriteComponent(Pixmap sprite) {
         this(sprite, sprite.getWidth(), sprite.getHeight(), 1);
@@ -37,6 +38,10 @@ public class SpriteComponent extends Component {
         this.looping = looping;
     }
 
+    public void setAnimating(boolean animating) {
+        this.animating = animating;
+    }
+
     @Override
     public void initialize(Actor actor) {
         this.currentFrame = 0;
@@ -45,6 +50,7 @@ public class SpriteComponent extends Component {
 
     @Override
     public void update(float dt) {
+        if (!animating) return;
         if (frameCount > 1) {
             frameTime += dt;
             if (frameTime >= frameDuration) {

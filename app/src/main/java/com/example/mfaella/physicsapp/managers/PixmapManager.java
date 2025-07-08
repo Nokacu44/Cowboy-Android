@@ -17,23 +17,22 @@ public class PixmapManager {
         if (PixmapManager.graphics == null) {
             PixmapManager.graphics = graphics;
 
-            loadPixmap("characters/cowboy.png", Graphics.PixmapFormat.ARGB8888);
-            loadPixmap("characters/hangman1.png", Graphics.PixmapFormat.ARGB8888);
-            loadPixmap("characters/bandit.png", Graphics.PixmapFormat.ARGB8888);
-            loadPixmap("guns/rifle.png", Graphics.PixmapFormat.ARGB8888);
-            loadPixmap("guns/bullet.png", Graphics.PixmapFormat.ARGB8888);
-            loadPixmap("environment/rock1.png", Graphics.PixmapFormat.ARGB8888);
-            loadPixmap("environment/crate.png", Graphics.PixmapFormat.ARGB8888);
-            loadPixmap("environment/rope_segment.png", Graphics.PixmapFormat.ARGB8888);
-            loadPixmap("environment/golden_chain.png", Graphics.PixmapFormat.ARGB8888);
-            loadPixmap("environment/platform_0.png", Graphics.PixmapFormat.ARGB8888);
-            loadPixmap("environment/arc_platform.png", Graphics.PixmapFormat.ARGB8888);
-            loadPixmap("environment/gallows.png", Graphics.PixmapFormat.ARGB8888);
-            loadPixmap("environment/ground.png", Graphics.PixmapFormat.ARGB8888);
-            loadPixmap("ui/bang_btn.png", Graphics.PixmapFormat.ARGB8888);
-            loadPixmap("ui/status_icons.png", Graphics.PixmapFormat.ARGB8888);
-            loadPixmap("ui/clock_sheet.png", Graphics.PixmapFormat.ARGB8888);
-            loadPixmap("ui/sheriff_star.png", Graphics.PixmapFormat.ARGB8888);
+//            loadPixmap("characters/cowboy.png", Graphics.PixmapFormat.ARGB8888);
+//            loadPixmap("characters/hangman1.png", Graphics.PixmapFormat.ARGB8888);
+//            loadPixmap("characters/bandit.png", Graphics.PixmapFormat.ARGB8888);
+//            loadPixmap("guns/rifle.png", Graphics.PixmapFormat.ARGB8888);
+//            loadPixmap("guns/bullet.png", Graphics.PixmapFormat.ARGB8888);
+//            loadPixmap("environment/rock1.png", Graphics.PixmapFormat.ARGB8888);
+//            loadPixmap("environment/crate.png", Graphics.PixmapFormat.ARGB8888);
+//            loadPixmap("environment/rope_segment.png", Graphics.PixmapFormat.ARGB8888);
+//            loadPixmap("environment/golden_chain.png", Graphics.PixmapFormat.ARGB8888);
+//            loadPixmap("environment/platform_0.png", Graphics.PixmapFormat.ARGB8888);
+//            loadPixmap("environment/arc_platform.png", Graphics.PixmapFormat.ARGB8888);
+//            loadPixmap("environment/gallows.png", Graphics.PixmapFormat.ARGB8888);
+//            loadPixmap("environment/ground.png", Graphics.PixmapFormat.ARGB8888);
+//            loadPixmap("ui/bang_btn.png", Graphics.PixmapFormat.ARGB8888);
+//            loadPixmap("ui/status_icons.png", Graphics.PixmapFormat.ARGB8888);
+//            loadPixmap("ui/clock_sheet.png", Graphics.PixmapFormat.ARGB8888);
 
             Log.d("ASSETS ", String.valueOf(pixmapMap));
         }

@@ -1,6 +1,9 @@
 package com.example.mfaella.physicsapp.actors;
 
+import static com.example.mfaella.physicsapp.events.GameEvents.EventType.BANG_BUTTON_PRESSED;
 import static com.example.mfaella.physicsapp.events.GameEvents.EventType.BEGIN_AIM;
+import static com.example.mfaella.physicsapp.events.GameEvents.EventType.HANGMAN_DEAD;
+import static com.example.mfaella.physicsapp.events.GameEvents.EventType.OUT_OF_AMMO;
 import static com.example.mfaella.physicsapp.events.GameEvents.EventType.SHOOT;
 
 import android.graphics.Color;
@@ -12,6 +15,7 @@ import com.badlogic.androidgames.framework.Graphics;
 import com.badlogic.androidgames.framework.Input;
 import com.example.mfaella.physicsapp.Coordinates;
 import com.example.mfaella.physicsapp.events.GameEvents;
+import com.example.mfaella.physicsapp.levels.GameLevel;
 import com.example.mfaella.physicsapp.managers.PhysicsManager;
 import com.example.mfaella.physicsapp.managers.PixmapManager;
 import com.example.mfaella.physicsapp.components.PhysicsComponent;
@@ -41,20 +45,20 @@ public class Gun extends Actor {
 
     private final PathEffect dotEffect = new DashPathEffect(new float[]{2f, 4f}, 0f);
 
-    public Gun(float x, float y, Input input, int rounds) {
-        super(x, y);
+    public Gun(GameLevel level, float x, float y, Input input, int rounds) {
+        super(level, x, y);
         this.input = input;
 
         bullets = new ArrayList<>(rounds);
         for (int i = 0; i < rounds; ++i) {
-            bullets.add(new Bullet());
+            bullets.add(new Bullet(level));
         }
 
-        this.physicsWorld = PhysicsManager.physicsWorld;
+        this.physicsWorld = level.physicsManager.physicsWorld;
         this.currentBullet = 0;
         addComponent(new SpriteComponent(PixmapManager.getPixmap("guns/rifle.png")));
 
-        GameEvents.connect(BEGIN_AIM, (data) -> Log.d("BEGIN AIM", "YES"));
+        level.events.connect(BEGIN_AIM, (data) -> Log.d("BEGIN AIM", "YES"));
     }
 
 
@@ -72,16 +76,20 @@ public class Gun extends Actor {
         bullet.activate();
         bullet.shoot(dirX, dirY);
         currentBullet += 1;
-        GameEvents.emit(SHOOT);
+        level.events.emit(SHOOT);
+        if (currentBullet >= this.bullets.size()) {
+            level.events.emit(OUT_OF_AMMO);
+        }
     }
 
 
     @Override
     public void update(float dt) {
         super.update(dt);
+        if (level.finished) return;
         if (canShoot && input.isTouchDown(0) && input.getTouchX(0) > x) {
             if (input.isTouchJustDown(0)) {
-                GameEvents.emit(BEGIN_AIM);
+                level.events.emit(BEGIN_AIM);
             }
             this.target_x = input.getTouchX(0);
             this.target_y = input.getTouchY(0);
@@ -98,27 +106,14 @@ public class Gun extends Actor {
     public void draw(Graphics g) {
         if (this.angle >= Math.toRadians(-35) && this.angle <= Math.toRadians(35)) {
 
-//            float x2 = x + 100 * (float) Math.cos(this.angle);
-//            float y2 = y + 100 * (float) Math.sin(this.angle);
-
-//            g.drawLine(x, y, x2, y2, Color.RED, dotEffect);
             float dirX = (float) Math.cos(angle) * 16;
             float dirY = (float) Math.sin(angle) * 16;
 
-//            List<Vec2> points = calculateTrajectoryWithRaycast(
-//                    physicsWorld,
-//                    new Vec2(Coordinates.toSimulationX(x), Coordinates.toSimulationY(y)),
-//                    new Vec2((dirX * 16 / 250 ) , (dirY * 16 / 250)),
-//                    0.04f,
-//                    PhysicsManager.GRAVITY,
-//                    0.5f,    // durata totale
-//                    30       // punti totali
-//            );
             List<Vec2> points = calculateTrajectory(
                     new Vec2(Coordinates.toSimulationX(x), Coordinates.toSimulationY(y)),
                     new Vec2((dirX * 16 / 250 ) , (dirY * 16 / 250)),
                     0.04f,
-                    PhysicsManager.GRAVITY,
+                    level.physicsManager.gravity,
                     0.25f,          // quanti punti
                     20        // ogni quanti secondi
             );
@@ -126,15 +121,6 @@ public class Gun extends Actor {
             for (Vec2 p : points) {
                 g.drawRect(Coordinates.toPixelsX(p.getX()), Coordinates.toPixelsX(p.getY()), 1, 1, Color.RED);
             }
-//            physicsWorld.rayCast(new RayCastCallback() {
-//                @Override
-//                public float reportFixture(Fixture fixture, Vec2 point, Vec2 normal, float fraction) {
-//                    Actor actor = (Actor) fixture.getBody().getUserData();
-//                    Log.d("RAYCAST", (String.valueOf(actor)));
-//                    return 1;
-//                }
-//            }, Coordinates.toSimulationX(shootPointX), Coordinates.toSimulationY(shootPointY), Coordinates.toSimulationX(x2), Coordinates.toSimulationY(y2));
-
         }
         super.draw(g);
         for (int i = 0; i < this.bullets.size(); i++) {

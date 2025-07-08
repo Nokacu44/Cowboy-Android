@@ -1,5 +1,9 @@
 package com.example.mfaella.physicsapp;
 
+import android.graphics.RectF;
+
+import com.google.fpl.liquidfun.Vec2;
+
 public class Coordinates {
 
     public static Box simulationSize;
@@ -52,33 +56,13 @@ public class Coordinates {
         return dx * dx + dy * dy <= r * r;
     }
 
-
-
-    public static int rotateX(int px, int py, int pivotX, int pivotY, double angle) {
-        double radian = Math.toRadians(angle); // Conversione dell'angolo in radianti
-        double cosTheta = Math.cos(radian);
-        double sinTheta = Math.sin(radian);
-
-        // Traslazione del punto rispetto al pivot (spostiamo il pivot a (0, 0))
-        double relativeX = px - pivotX;
-        double relativeY = py - pivotY;
-
-        // Applicare la rotazione sulla coordinata X
-        return (int) (pivotX + relativeX * cosTheta - relativeY * sinTheta);
+    public static boolean isInRect(float x, float y, RectF rect) {
+        return rect != null && rect.contains(x, y);
     }
 
-    public static int rotateY(int px, int py, int pivotX, int pivotY, double angle) {
-        double radian = Math.toRadians(angle); // Conversione dell'angolo in radianti
-        double cosTheta = Math.cos(radian);
-        double sinTheta = Math.sin(radian);
 
-        // Traslazione del punto rispetto al pivot (spostiamo il pivot a (0, 0))
-        double relativeX = px - pivotX;
-        double relativeY = py - pivotY;
-
-        // Applicare la rotazione sulla coordinata Y
-        return (int) (pivotY + relativeX * sinTheta + relativeY * cosTheta);
+    public static float getVectorLength(Vec2 vec) {
+        return (float) Math.sqrt(vec.getX() * vec.getX() + vec.getY() * vec.getY());
     }
-
 
 }
