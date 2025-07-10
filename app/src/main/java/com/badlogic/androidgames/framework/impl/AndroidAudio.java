@@ -14,7 +14,7 @@ import com.badlogic.androidgames.framework.Music;
 import com.badlogic.androidgames.framework.Sound;
 
 public class AndroidAudio implements Audio {
-    AssetManager assets;
+    public AssetManager assets;
     SoundPool soundPool;
     private static final int SIMULTANEOUS_CHANNELS = 4;
 

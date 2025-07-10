@@ -1,16 +1,13 @@
 package com.example.mfaella.physicsapp.actors;
 
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 
 import com.badlogic.androidgames.framework.Graphics;
-import com.example.mfaella.physicsapp.CollisionHandler;
 import com.example.mfaella.physicsapp.Coordinates;
 import com.example.mfaella.physicsapp.components.PhysicsComponent;
 import com.example.mfaella.physicsapp.components.SpriteComponent;
 import com.example.mfaella.physicsapp.levels.GameLevel;
-import com.example.mfaella.physicsapp.managers.PhysicsManager;
+import com.example.mfaella.physicsapp.managers.AudioManager;
 import com.example.mfaella.physicsapp.managers.PixmapManager;
 import com.google.fpl.liquidfun.Body;
 import com.google.fpl.liquidfun.BodyType;
@@ -21,49 +18,86 @@ import com.google.fpl.liquidfun.Vec2;
 import java.util.List;
 
 public class Bandit extends Actor {
+    private static final long ALERT_DELAY_MS = 500;
+    private static final float BULLET_SPEED = 24f;
+    private static final float RECOIL_IMPULSE = -0.0245f;
+    private static final float RAY_CAST_DISTANCE = 400f;
 
-    Actor alertActor;
-    Bullet bullet;
+    private Actor alertActor;
+    private Bullet bullet;
+    private PhysicsComponent physicsComponent;
 
-    boolean shoot = false;
+    private RayCastCallback rayCastCallback;
 
-    PhysicsComponent physicsComponent;
+    private boolean hasShot = false;
+    private boolean isDead = false;
 
-    public Bandit(GameLevel level, float x, float y) {
+    private boolean facingRight;
+
+    public Bandit(GameLevel level, float x, float y, boolean facingRight) {
         super(level, x, y);
-        addComponent(new SpriteComponent(PixmapManager.getPixmap("characters/bandit_sheet.png"), 24, 19, 2));
+        this.facingRight = facingRight;
+        setupSprite();
+        setupPhysics(level);
+        setupBulletAndAlertActor(level, x, y);
+    }
+
+    private void setupSprite() {
+        addComponent(new SpriteComponent(PixmapManager.getPixmap("characters/bandit_sheet.png"), 24, 19, 4));
         getComponent(SpriteComponent.class).setAnimating(false);
-
-        CollisionHandler collisionHandler = (otherActor, myBody, otherBody) -> {
-            if (otherActor instanceof Crate) {
-                showDeathStatus();
-                getComponent(SpriteComponent.class).setCurrentFrame(1);
-                level.timerManager.scheduleOnce(() -> {
-                    shoot();
-                    alertActor.getComponent(SpriteComponent.class).hide();
-                }, 500);
-            }
-            if (otherActor instanceof Bullet) {
-                showDeathStatus();
-                getComponent(SpriteComponent.class).setCurrentFrame(1);
-                level.timerManager.scheduleOnce(() -> {
-                    shoot = false;
-                    alertActor.getComponent(SpriteComponent.class).hide();
-                }, 500);
-            }
-        };
-        physicsComponent = new PhysicsComponent(level, BodyType.dynamicBody, Coordinates.pixelsToMetersLengthsX(4f), Coordinates.pixelsToMetersLengthsX(19f), 5f, collisionHandler);
-        addComponent(physicsComponent);
-
-        bullet = new Bullet(level);
-        bullet.x = x;
-        bullet.y = y;
-        alertActor = new Actor(level, x, y - 16, List.of(new SpriteComponent(PixmapManager.getPixmap("ui/status_icons.png"), 11, 12, 2)));
-        alertActor.getComponent(SpriteComponent.class).hide();
-        alertActor.getComponent(SpriteComponent.class).setAnimating(false);
+        getComponent(SpriteComponent.class).setCurrentFrame(facingRight ? 0 : 2);
 
     }
 
+    private void setupPhysics(GameLevel level) {
+        physicsComponent = new PhysicsComponent(
+                level,
+                BodyType.dynamicBody,
+                Coordinates.pixelsToMetersLengthsX(4f),
+                Coordinates.pixelsToMetersLengthsX(19f),
+                5f,
+                this::handleCollision
+        );
+        addComponent(physicsComponent);
+        rayCastCallback = new RayCastCallback(){
+            @Override
+            public float reportFixture(Fixture fixture, Vec2 point, Vec2 normal, float fraction) {
+                return handleRayCastCallback(fixture, point, normal, fraction);
+            }
+        };
+    }
+
+    private void setupBulletAndAlertActor(GameLevel level, float x, float y) {
+        bullet = new Bullet(level);
+        bullet.x = x;
+        bullet.y = y;
+
+        alertActor = new Actor(level, x, y - 16, List.of(
+                new SpriteComponent(PixmapManager.getPixmap("ui/status_icons.png"), 11, 12, 4)
+        ));
+        alertActor.getComponent(SpriteComponent.class).hide();
+        alertActor.getComponent(SpriteComponent.class).setAnimating(false);
+    }
+
+    private void handleCollision(Actor otherActor, Body myBody, Body otherBody) {
+        if (otherActor instanceof Crate) {
+            handleDeathSequence(true);
+        } else if (otherActor instanceof Bullet) {
+            handleDeathSequence(false);
+        }
+    }
+
+    private void handleDeathSequence(boolean shoot) {
+        if (isDead) return;
+
+        showDeathStatus();
+        getComponent(SpriteComponent.class).setCurrentFrame(facingRight ? 1 : 3);
+
+        level.timerManager.scheduleOnce(() -> {
+            if (shoot) shoot();
+            alertActor.getComponent(SpriteComponent.class).hide();
+        }, ALERT_DELAY_MS);
+    }
 
     public void showAlertStatus() {
         alertActor.getComponent(SpriteComponent.class).setCurrentFrame(0);
@@ -71,57 +105,93 @@ public class Bandit extends Actor {
     }
 
     public void showDeathStatus() {
+        if (isDead) return;
+
         alertActor.getComponent(SpriteComponent.class).setCurrentFrame(1);
+
         alertActor.getComponent(SpriteComponent.class).show();
+        isDead = true;
+        AudioManager.getSound("audio/wilhelmScream.mp3").play(100);
     }
 
     public void shoot() {
-        if (shoot) return;
+        if (hasShot) return;
+
+        prepareBullet();
+        fireBullet();
+        applyRecoil();
+
+        hasShot = true;
+        AudioManager.getSound("audio/sparoPistola.mp3").play(100);
+    }
+
+    private void prepareBullet() {
         bullet.x = x;
         bullet.y = y;
-        bullet.getComponent(PhysicsComponent.class).body.setTransform(new Vec2(Coordinates.toSimulationX(x + 4), Coordinates.toSimulationY(y)), (angle));
-        float dirX = (float) Math.cos(angle) * 24;
-        float dirY = (float) Math.sin(angle) * 24;
-        bullet.activate();
-        bullet.shoot(dirX , dirY );
-        Log.d("BANDIT", "SHOOT");
-        shoot = true;
-        //0.0245f
-        physicsComponent.body.applyLinearImpulse(new Vec2(-0.0245f, 0f), new Vec2(0, 0), true);
-
+        bullet.getComponent(PhysicsComponent.class).body.setTransform(
+                new Vec2(Coordinates.toSimulationX(x + (facingRight ? 4 : -4)), Coordinates.toSimulationY(y)),
+                facingRight ? angle : -angle
+        );
     }
 
-    @Override
-    public void update(float dt) {
-        super.update(dt);
-        level.physicsManager.physicsWorld.rayCast(new RayCastCallback() {
-            @Override
-            public float reportFixture(Fixture fixture, Vec2 point, Vec2 normal, float fraction) {
+        private void fireBullet() {
+            float dirX = (float) Math.cos(angle) * (facingRight ? BULLET_SPEED : -BULLET_SPEED);
+            float dirY = (float) Math.sin(angle) *  (facingRight ? BULLET_SPEED : -BULLET_SPEED);
 
-                Actor actor = (Actor) fixture.getBody().getUserData();
-                if (shoot || !(actor instanceof Hangman)) return fraction;
+            bullet.activate();
+            bullet.shoot(dirX, dirY);
+            Log.d("BANDIT", "SHOOT");
+        }
 
-                Log.d("BANDIT", (String.valueOf(actor)));
+        private void applyRecoil() {
+            physicsComponent.body.applyLinearImpulse(
+                    new Vec2(facingRight ? RECOIL_IMPULSE : -RECOIL_IMPULSE, 0f),
+                    new Vec2(0, 0),
+                    true
+            );
+        }
 
-                //Entra in Alert
-                showAlertStatus();
+        @Override
+        public void update(float dt) {
+            super.update(dt);
 
-                // Poi spara
-                level.timerManager.scheduleOnce(() -> {
-                    shoot();
-                    alertActor.getComponent(SpriteComponent.class).hide();
-                }, 500);
-                return 1;
+            if (isDead) return;
+
+            level.physicsManager.physicsWorld.rayCast(rayCastCallback,
+                    Coordinates.toSimulationX(x),
+                    Coordinates.toSimulationY(y),
+                    Coordinates.toSimulationX(x + (facingRight ? RAY_CAST_DISTANCE : -RAY_CAST_DISTANCE)),
+                    Coordinates.toSimulationY(y)
+            );
+
+            bullet.update(dt);
+            alertActor.update(dt);
+        }
+
+
+        private float handleRayCastCallback(Fixture fixture, Vec2 point, Vec2 normal, float fraction) {
+            Actor actor = (Actor) fixture.getBody().getUserData();
+
+            if (hasShot || !(actor instanceof Hangman)) {
+                return fraction;
             }
-        }, Coordinates.toSimulationX(x), Coordinates.toSimulationY(y), Coordinates.toSimulationX(x + 400), Coordinates.toSimulationY(y));
-        bullet.update(dt);
-        alertActor.update(dt);
-    }
 
-    @Override
-    public void draw(Graphics g) {
-        super.draw(g);
-        alertActor.draw(g);
-        bullet.draw(g);
+            // Enter Alert state
+            showAlertStatus();
+
+            // Shoot after delay
+            level.timerManager.scheduleOnce(() -> {
+                shoot();
+                alertActor.getComponent(SpriteComponent.class).hide();
+            }, ALERT_DELAY_MS);
+
+            return 1;
+        }
+
+        @Override
+        public void draw(Graphics g) {
+            super.draw(g);
+            alertActor.draw(g);
+            bullet.draw(g);
+        }
     }
-}

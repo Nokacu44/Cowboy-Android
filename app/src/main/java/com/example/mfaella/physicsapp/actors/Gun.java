@@ -16,6 +16,7 @@ import com.badlogic.androidgames.framework.Input;
 import com.example.mfaella.physicsapp.Coordinates;
 import com.example.mfaella.physicsapp.events.GameEvents;
 import com.example.mfaella.physicsapp.levels.GameLevel;
+import com.example.mfaella.physicsapp.managers.AudioManager;
 import com.example.mfaella.physicsapp.managers.PhysicsManager;
 import com.example.mfaella.physicsapp.managers.PixmapManager;
 import com.example.mfaella.physicsapp.components.PhysicsComponent;
@@ -31,6 +32,9 @@ import java.util.Collections;
 import java.util.List;
 
 public class Gun extends Actor {
+
+    private final float MIN_ANGLE = -40;
+    private final float MAX_ANGLE = 40;
 
     Input input;
     World physicsWorld;
@@ -58,7 +62,10 @@ public class Gun extends Actor {
         this.currentBullet = 0;
         addComponent(new SpriteComponent(PixmapManager.getPixmap("guns/rifle.png")));
 
-        level.events.connect(BEGIN_AIM, (data) -> Log.d("BEGIN AIM", "YES"));
+        level.events.connect(BEGIN_AIM, (data) -> {
+            AudioManager.getSound("audio/chambering.mp3").play(100);
+        });
+
     }
 
 
@@ -69,7 +76,7 @@ public class Gun extends Actor {
         }
         Bullet bullet = this.bullets.get(currentBullet);
         bullet.getComponent(PhysicsComponent.class).body.setTransform(new Vec2(Coordinates.toSimulationX(x), Coordinates.toSimulationY(y)), (angle));
-        this.rotateTowards(x, y, target_x, target_y);
+        //this.rotateTowards(x, y, target_x, target_y);
         float dirX = (float) Math.cos(angle) * 16;
         float dirY = (float) Math.sin(angle) * 16;
         Log.d("DIRECTION ", String.format("%s %s", dirX, dirY));
@@ -80,6 +87,8 @@ public class Gun extends Actor {
         if (currentBullet >= this.bullets.size()) {
             level.events.emit(OUT_OF_AMMO);
         }
+        AudioManager.getSound("audio/sparoFucile2.mp3").play(100);
+
     }
 
 
@@ -94,7 +103,7 @@ public class Gun extends Actor {
             this.target_x = input.getTouchX(0);
             this.target_y = input.getTouchY(0);
             rotateTowards(x, y, target_x, target_y);
-            angle = clamp(angle, (float) Math.toRadians(-35), (float) Math.toRadians(35));
+            angle = clamp(angle, (float) Math.toRadians(MIN_ANGLE), (float) Math.toRadians(MAX_ANGLE));
         }
         for (int i = 0; i < this.bullets.size(); i++) {
             this.bullets.get(i).update(dt);
@@ -104,7 +113,7 @@ public class Gun extends Actor {
 
     @Override
     public void draw(Graphics g) {
-        if (this.angle >= Math.toRadians(-35) && this.angle <= Math.toRadians(35)) {
+        if (this.angle >= Math.toRadians(MIN_ANGLE) && this.angle <= Math.toRadians(MAX_ANGLE)) {
 
             float dirX = (float) Math.cos(angle) * 16;
             float dirY = (float) Math.sin(angle) * 16;
@@ -138,66 +147,6 @@ public class Gun extends Actor {
         return Math.max(min, Math.min(value, max));
     }
 
-
-    private List<Vec2> calculateTrajectoryWithRaycast(
-            World physicsWorld,
-            Vec2 startPosition,
-            Vec2 impulse,
-            float bodyMass,
-            Vec2 gravity,
-            float totalDuration,
-            int pointCount)
-    {
-        List<Vec2> fullTrajectory = new ArrayList<>();
-
-        Vec2 initialVelocity = new Vec2(
-                impulse.getX() / bodyMass,
-                impulse.getY() / bodyMass
-        );
-
-        float timeStep = totalDuration / pointCount;
-
-        final boolean[] hitDetected = {false};
-        final Vec2[] hitPoint = {null};
-
-        for (int i = 0; i < pointCount; i++) {
-            float t = i * timeStep;
-
-            float x = startPosition.getX() + initialVelocity.getX() * t + 0.5f * gravity.getX() * t * t;
-            float y = startPosition.getY() + initialVelocity.getY() * t + 0.5f * gravity.getY() * t * t;
-
-            Vec2 currentPoint = new Vec2(x, y);
-
-            // Se non è il primo punto, fai raycast tra il precedente e l'attuale
-            if (i > 0 && !hitDetected[0]) {
-                Vec2 prevPoint = fullTrajectory.get(fullTrajectory.size() - 1);
-
-                // Lancia il raycast
-                physicsWorld.rayCast(new RayCastCallback() {
-                                         @Override
-                                         public float reportFixture(Fixture fixture, Vec2 point, Vec2 normal, float fraction) {
-                                             // Salva il punto di impatto
-                                             hitPoint[0] = new Vec2(point.getX(), point.getY());
-                                             hitDetected[0] = true;
-                                             Log.d("BIIG", "SSSSS");
-                                             // Restituisci frazione per fermare il raycast al primo impatto
-                                             return fraction;
-                                         }
-                                     },
-                        Coordinates.toSimulationX(prevPoint.getX()), Coordinates.toSimulationY(prevPoint.getY()), Coordinates.toSimulationX(currentPoint.getX()), Coordinates.toSimulationY(currentPoint.getY()));
-
-                if (hitDetected[0]) {
-                    // Aggiungi l'ultimo punto di impatto e interrompi il ciclo
-                    fullTrajectory.add(hitPoint[0]);
-                    break;
-                }
-            }
-
-            fullTrajectory.add(currentPoint);
-        }
-
-        return fullTrajectory;
-    }
 
     private List<Vec2> calculateTrajectory(
             Vec2 startPosition,

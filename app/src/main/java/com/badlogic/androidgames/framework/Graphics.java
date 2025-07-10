@@ -27,6 +27,7 @@ public interface Graphics {
 
     public void drawPixmap(Pixmap pixmap, float x, float y);
 
+
     public void drawPixmap(Pixmap pixmap, float x, float y, float rot);
 
     public int getWidth();

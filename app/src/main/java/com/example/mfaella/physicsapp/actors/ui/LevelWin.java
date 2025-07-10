@@ -4,6 +4,8 @@ import com.example.mfaella.physicsapp.Coordinates;
 import com.example.mfaella.physicsapp.actors.Actor;
 import com.example.mfaella.physicsapp.components.SpriteComponent;
 import com.example.mfaella.physicsapp.levels.GameLevel;
+import com.example.mfaella.physicsapp.levels.LevelSelection;
+import com.example.mfaella.physicsapp.managers.AudioManager;
 import com.example.mfaella.physicsapp.managers.PixmapManager;
 
 import java.util.ArrayList;
@@ -32,7 +34,10 @@ public class LevelWin extends Actor {
             starsActor.get(i).makeGold();
         }
 
-        Button retryButton = new Button(level, 160, 100, "ui/retry_btn.png", level.game.getLevelManager()::restartLevel);
+        Button retryButton = new Button(level, 160, 100, "ui/next_btn.png", () -> level.game.getLevelManager().startLevel(LevelSelection::new));
         level.addActor(retryButton);
+
+        AudioManager.getSound("audio/win_jingle.mp3").play(1f);
+
     }
 }

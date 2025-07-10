@@ -19,8 +19,11 @@ import com.badlogic.androidgames.framework.Input;
 import com.badlogic.androidgames.framework.Screen;
 import com.example.mfaella.physicsapp.Box;
 import com.example.mfaella.physicsapp.Coordinates;
+import com.example.mfaella.physicsapp.managers.AudioManager;
+import com.example.mfaella.physicsapp.managers.GlobalScoreManager;
 import com.example.mfaella.physicsapp.managers.LevelManager;
 import com.example.mfaella.physicsapp.managers.PixmapManager;
+import com.example.mfaella.physicsapp.managers.ScorePersistence;
 
 public abstract class AndroidGame extends Activity implements Game {
     AndroidFastRenderView renderView;
@@ -71,7 +74,11 @@ public abstract class AndroidGame extends Activity implements Game {
         Coordinates.gameWidth = graphics.getWidth();
         Coordinates.gameHeight = graphics.getHeight();
 
+        // Mine
         PixmapManager.init(graphics);
+        AudioManager.init(audio);
+        ScorePersistence persistenceManager = new ScorePersistence(this);
+        GlobalScoreManager.init(persistenceManager);
 
         screen = getStartScreen();
 

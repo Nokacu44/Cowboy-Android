@@ -1,33 +1,54 @@
 package com.example.mfaella.physicsapp.managers;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class GlobalScoreManager {
-    private final HashMap<String, Integer> levelStars = new HashMap<>();
 
-    /**
-     * Salva il punteggio solo se è maggiore del precedente
-     */
-    public void saveScore(String levelId, int stars) {
+    private static final Map<String, Integer> levelStars = new HashMap<>();
+    private static ScorePersistence persistenceManager;
+
+    public static void init(ScorePersistence scorePersistence) {
+        persistenceManager = scorePersistence;
+        loadFrom(scorePersistence.loadAllScores());
+    }
+
+    public static void setStars(String levelId, int stars) {
         int previous = levelStars.getOrDefault(levelId, 0);
         if (stars > previous) {
             levelStars.put(levelId, stars);
+            if (persistenceManager != null) {
+                persistenceManager.saveScore(levelId, stars);
+            }
         }
     }
 
-    public int getStarsForLevel(String levelId) {
+    public static int getStars(String levelId) {
         return levelStars.getOrDefault(levelId, 0);
     }
 
-    public int getTotalStars() {
+    public static Map<String, Integer> getAllStars() {
+        return new HashMap<>(levelStars);
+    }
+
+    public static int getTotalStars() {
         int total = 0;
-        for (int s : levelStars.values()) {
-            total += s;
+        for (int stars : levelStars.values()) {
+            total += stars;
         }
         return total;
     }
 
-    public HashMap<String, Integer> getAllScores() {
-        return levelStars;
+    public static void clear() {
+        levelStars.clear();
+    }
+
+    public static void loadFrom(Map<String, Integer> data) {
+        levelStars.clear();
+        levelStars.putAll(data);
+    }
+
+    public static Map<String, Integer> export() {
+        return new HashMap<>(levelStars);
     }
 }

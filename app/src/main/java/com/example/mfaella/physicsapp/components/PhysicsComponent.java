@@ -41,7 +41,7 @@ public class PhysicsComponent extends Component {
     public final float width;
     public final float height;
 
-    private final CollisionHandler handler;
+    private CollisionHandler handler;
 
     private final ArrayList<JointInfo> joints = new ArrayList<>();
 
@@ -120,6 +120,10 @@ public class PhysicsComponent extends Component {
         if (handler != null) {
             handler.handleCollision(otherActor, myBody, otherBody);
         }
+    }
+
+    public void setCollisionHandler(CollisionHandler handler) {
+        this.handler = handler;
     }
 
     public void addRopeJoint(

@@ -1,8 +1,12 @@
 package com.example.mfaella.physicsapp.components;
 
+import android.graphics.Bitmap;
+
 import com.badlogic.androidgames.framework.Graphics;
 import com.badlogic.androidgames.framework.Pixmap;
+import com.badlogic.androidgames.framework.impl.AndroidPixmap;
 import com.example.mfaella.physicsapp.actors.Actor;
+import com.example.mfaella.physicsapp.managers.PixmapManager;
 
 public class SpriteComponent extends Component {
 
@@ -109,4 +113,5 @@ public class SpriteComponent extends Component {
         this.currentFrame = frame;
         this.frameTime = 0f;
     }
+
 }

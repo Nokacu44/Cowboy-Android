@@ -2,12 +2,14 @@ package com.example.mfaella.physicsapp;
 
 import android.util.Log;
 
+
 import com.badlogic.androidgames.framework.FileIO;
 import com.badlogic.androidgames.framework.Game;
 import com.example.mfaella.physicsapp.actors.Actor;
 import com.example.mfaella.physicsapp.actors.Bandit;
 import com.example.mfaella.physicsapp.actors.Crate;
 import com.example.mfaella.physicsapp.actors.DeflectionTry;
+import com.example.mfaella.physicsapp.actors.FryingPan;
 import com.example.mfaella.physicsapp.actors.Hangman;
 import com.example.mfaella.physicsapp.actors.Player;
 import com.example.mfaella.physicsapp.actors.Rope;
@@ -43,11 +45,6 @@ public class LevelLoader {
         try {
             String json = readFileAsString(fileName);
             JSONObject root = new JSONObject(json);
-//
-//            JSONArray levels = root.getJSONArray("levels");
-//
-//            JSONObject firstLevel = levels.getJSONObject(0);
-
             JSONArray layerInstances = root.getJSONArray("layerInstances");
             for (int i = 0; i < layerInstances.length(); i++) {
                 JSONObject layer = layerInstances.getJSONObject(i);
@@ -65,9 +62,48 @@ public class LevelLoader {
                     float width = (float) entity.getInt("width");
                     float height = (float) entity.getInt("height");
 
+                    float angle = 0f;
+
+                    boolean facingRight = true;
+
+                    if (entity.has("fieldInstances")) {
+                        JSONArray fields = entity.getJSONArray("fieldInstances");
+                        for (int k = 0; k < fields.length(); k++) {
+                            JSONObject field = fields.getJSONObject(k);
+                            if (field.getString("__identifier").equals("angle")) {
+                                angle = (float) field.getDouble("__value");
+                            } else if (field.getString("__identifier").equals("facingRight")) {
+                                facingRight = field.getBoolean("__value");
+                            }
+                        }
+                    }
+
                     switch (identifier) {
+                        case "FryingPan":
+                            boolean hanged = false;
+                            float deflectionAngle = 0;
+                            int ropeLength = 0;
+                            JSONArray fields = entity.getJSONArray("fieldInstances");
+                            for (int k = 0; k < fields.length(); k++) {
+                                JSONObject field = fields.getJSONObject(k);
+                                if (field.getString("__identifier").equals("deflectionAngle")) {
+                                    deflectionAngle = (float) field.getDouble("__value");
+                                } else if (field.getString("__identifier").equals("hanged")) {
+                                    hanged = field.getBoolean("__value");
+                                } else if (field.getString("__identifier").equals("ropeLength")) {
+                                    ropeLength = field.getInt("__value");
+                                }
+                            }
+                            if (hanged) {
+                                Rope rope = new Rope(levelInstance, x, y, ropeLength, Rope.RopeType.SOFT, FryingPan::new);
+                                actors.add(rope);
+                                ((FryingPan)rope.endActor).deflectionAngle = deflectionAngle;
+                            } else {
+                                actors.add(new FryingPan(levelInstance, x, y, deflectionAngle));
+                            }
+                            break;
                         case "Bandit":
-                            actors.add(new Bandit(levelInstance, x, y));
+                            actors.add(new Bandit(levelInstance, x, y, facingRight));
                             break;
                         case "Ground":
                             actors.add(new Actor(levelInstance, x, y, List.of(
@@ -99,17 +135,21 @@ public class LevelLoader {
                             )));
                             break;
                         case "Platform":
-                            actors.add(new Actor(levelInstance, x, y, List.of(
+                            Actor platform = new Actor(levelInstance, x, y, List.of(
                                     new SpriteComponent(
                                             PixmapManager.getPixmap("environment/platform_0.png")
-                                    ),
+                                    )
+                            ));
+                            platform.angle = (float) Math.toRadians(angle);
+                            platform.addComponent(
                                     new PhysicsComponent(
                                             levelInstance,
                                             BodyType.staticBody,
                                             Coordinates.pixelsToMetersLengthsX(38),
                                             Coordinates.pixelsToMetersLengthsY(6f)
                                     )
-                            )));
+                            );
+                            actors.add(platform);
                             break;
                         case "Hangman":
                             actors.add(new Rope(levelInstance, x, y, 4, Rope.RopeType.SOFT, Hangman::new));

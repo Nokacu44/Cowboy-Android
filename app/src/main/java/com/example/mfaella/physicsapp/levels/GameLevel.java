@@ -9,7 +9,9 @@ import com.example.mfaella.physicsapp.actors.Actor;
 import com.example.mfaella.physicsapp.actors.ui.LevelFailed;
 import com.example.mfaella.physicsapp.actors.ui.LevelWin;
 import com.example.mfaella.physicsapp.events.GameEvents;
+import com.example.mfaella.physicsapp.managers.AudioManager;
 import com.example.mfaella.physicsapp.managers.CinematicManager;
+import com.example.mfaella.physicsapp.managers.GlobalScoreManager;
 import com.example.mfaella.physicsapp.managers.PhysicsManager;
 import com.example.mfaella.physicsapp.managers.TimerManager;
 import com.google.fpl.liquidfun.Vec2;
@@ -21,9 +23,7 @@ public abstract class GameLevel extends Screen {
     protected boolean active = true;
     protected boolean inputActive = true;
 
-    protected boolean hangmanDead = false;
     public boolean finished = false;
-    protected boolean failed = false;
 
     public final LevelRulesController levelRulesController;
     public final TimerManager timerManager = new TimerManager();
@@ -55,12 +55,17 @@ public abstract class GameLevel extends Screen {
         // Level Events
         levelRulesController = new LevelRulesController(events, timerManager, result -> {
             finished = true;
+
+            String currentLevelId = getLevelId();
+            GlobalScoreManager.setStars(currentLevelId, result.stars);
+
             if (result.victory) {
                 addActor(new LevelWin(this, result.stars));
             } else {
                 addActor(new LevelFailed(this));
             }
         });
+
 
     }
 
@@ -139,4 +144,6 @@ public abstract class GameLevel extends Screen {
         timerManager.cancelAll();
         physicsManager.dispose();
     }
+
+    public abstract String getLevelId();
 }

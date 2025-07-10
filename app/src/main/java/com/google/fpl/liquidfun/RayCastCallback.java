@@ -8,6 +8,7 @@
 
 package com.google.fpl.liquidfun;
 
+
 public class RayCastCallback {
   private transient long swigCPtr;
   protected transient boolean swigCMemOwn;

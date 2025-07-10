@@ -6,6 +6,7 @@ import android.os.Looper;
 import android.util.Log;
 
 import com.badlogic.androidgames.framework.Graphics;
+import com.example.mfaella.physicsapp.CollisionHandler;
 import com.example.mfaella.physicsapp.Coordinates;
 import com.example.mfaella.physicsapp.Tag;
 import com.example.mfaella.physicsapp.components.PhysicsComponent;
@@ -14,6 +15,7 @@ import com.example.mfaella.physicsapp.events.GameEventData;
 import com.example.mfaella.physicsapp.events.GameEvents;
 import com.example.mfaella.physicsapp.levels.GameLevel;
 import com.example.mfaella.physicsapp.managers.PixmapManager;
+import com.google.fpl.liquidfun.Body;
 import com.google.fpl.liquidfun.BodyType;
 import com.google.fpl.liquidfun.MassData;
 import com.google.fpl.liquidfun.Vec2;
@@ -23,13 +25,15 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.function.BiFunction;
 
+// TODO: delegare al fatto che ci sia un hangman l'invio dell'evento rope cut
+
 public class Rope extends Actor{
     public enum RopeType {
         SOFT,
         HARD
     }
     private final ArrayList<Actor> segments = new ArrayList<>();
-    private final Actor endActor;
+    public final Actor endActor;
 
     public Rope(GameLevel level, float x, float y, int numSegments, RopeType ropeType, ActorFactory endActorFactory) {
         super(level, x, y);
@@ -47,6 +51,8 @@ public class Rope extends Actor{
 
         PhysicsComponent previousComp = physicsComponent;
         float lastY = y;
+
+
 
         // Segmenti intermedi
         for (int i = 0; i < numSegments; i++) {
@@ -109,16 +115,24 @@ public class Rope extends Actor{
                 (float)Math.toRadians(15)
         );
 
-        // (esempio) Timer per scollegare l'actor dopo 5 secondi
-        new java.util.Timer().schedule(
-                new java.util.TimerTask() {
-                    @Override
-                    public void run() {
-                        // endComp.clearJoints();
+        // Una volta che conosco il tipo di actor appeso alla corda (usare un iterator non compromette le performance in quanto avviene solo in creazione)
+        for (Actor segment : segments) {
+            segment.getComponent(PhysicsComponent.class).setCollisionHandler((otherActor, myBody, otherBody) -> {
+                if (otherActor instanceof Bullet) {
+                    if (endActor instanceof Hangman) {
+                        level.events.emit(GameEvents.EventType.ROPE_CUT);
                     }
-                },
-                5000
-        );
+
+                    level.physicsManager.postTask(() -> {
+                        PhysicsComponent myPhysics = ((Actor)myBody.getUserData()).getComponent(PhysicsComponent.class);
+                        myPhysics.clearJoints();
+                        myPhysics.body.setActive(false);
+                        ((Actor)myBody.getUserData()).getComponent(SpriteComponent.class).hide();
+                        ((Bullet) otherActor).reset();
+                    });
+                }
+            });
+        }
     }
 
 

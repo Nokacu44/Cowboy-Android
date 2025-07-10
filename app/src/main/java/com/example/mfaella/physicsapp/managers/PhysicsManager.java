@@ -34,7 +34,7 @@ public class PhysicsManager {
 
     public void updatePhysicsWorld(float deltaTime) {
         if (destroyed) {
-            throw new IllegalStateException("PhysicsEngine is destroyed and cannot be updated.");
+            return;
         }
         physicsWorld.step(deltaTime, VELOCITY_ITERATIONS, POSITION_ITERATIONS, PARTICLE_ITERATIONS);
     }

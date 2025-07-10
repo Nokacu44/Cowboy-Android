@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.badlogic.androidgames.framework.Game;
 import com.badlogic.androidgames.framework.Input;
+import com.badlogic.androidgames.framework.Sound;
 import com.example.mfaella.physicsapp.Coordinates;
 import com.example.mfaella.physicsapp.actors.Actor;
 import com.example.mfaella.physicsapp.actors.ui.Button;
@@ -14,6 +15,8 @@ import com.example.mfaella.physicsapp.actors.ui.SheriffStar;
 import com.example.mfaella.physicsapp.components.ClickableComponent;
 import com.example.mfaella.physicsapp.components.PhysicsComponent;
 import com.example.mfaella.physicsapp.components.SpriteComponent;
+import com.example.mfaella.physicsapp.managers.AudioManager;
+import com.example.mfaella.physicsapp.managers.GlobalScoreManager;
 import com.example.mfaella.physicsapp.managers.PixmapManager;
 import com.google.fpl.liquidfun.BodyType;
 import com.google.fpl.liquidfun.Vec2;
@@ -24,8 +27,6 @@ public class MainMenu extends GameLevel {
     Actor brokenGlass;
     Actor sheriffStar;
     boolean beginPressed = false;
-
-
 
     public MainMenu(Game game) {
         super(game);
@@ -62,12 +63,15 @@ public class MainMenu extends GameLevel {
         actors.add(brokenGlass);
         brokenGlass.getComponent(SpriteComponent.class).hide();
 
+        AudioManager.getMusic("audio/cesare_rides_again.mp3").play();
+
     }
 
     private void crackGlass() {
         brokenGlass.getComponent(SpriteComponent.class).show();
         brokenGlass.x = game.getInput().getTouchX(0);
         brokenGlass.y = game.getInput().getTouchY(0);
+        AudioManager.getSound("audio/sparoFucile.wav").play(100);
     }
 
     @Override
@@ -78,6 +82,11 @@ public class MainMenu extends GameLevel {
             crackGlass();
             Log.d("MENU", "menu");
         }
+    }
+
+    @Override
+    public String getLevelId() {
+        return "MainMenu";
     }
 
 

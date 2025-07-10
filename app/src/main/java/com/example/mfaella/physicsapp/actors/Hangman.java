@@ -9,6 +9,7 @@ import com.example.mfaella.physicsapp.Coordinates;
 import com.example.mfaella.physicsapp.components.PhysicsComponent;
 import com.example.mfaella.physicsapp.components.SpriteComponent;
 import com.example.mfaella.physicsapp.levels.GameLevel;
+import com.example.mfaella.physicsapp.managers.AudioManager;
 import com.example.mfaella.physicsapp.managers.PixmapManager;
 import com.google.fpl.liquidfun.Body;
 import com.google.fpl.liquidfun.BodyType;
@@ -24,7 +25,6 @@ public class Hangman extends Actor {
 
     public void onCollision(Actor otherActor, Body myBody, Body otherBody) {
         if (otherActor instanceof Bullet) {
-            Log.d("HANGMAN", "proiettile");
             death();
         } else if (otherActor instanceof Crate) {
             if (Coordinates.getVectorLength(otherBody.getLinearVelocity()) > 6) {
@@ -36,5 +36,6 @@ public class Hangman extends Actor {
     public void death() {
         getComponent(SpriteComponent.class).setCurrentFrame(1);
         level.events.emit(HANGMAN_DEAD);
+        AudioManager.getSound("audio/wilhelmScream.mp3").play(100);
     }
 }
