@@ -19,7 +19,7 @@ import java.util.List;
 
 public class Bandit extends Actor {
     private static final long ALERT_DELAY_MS = 500;
-    private static final float BULLET_SPEED = 24f;
+    private static final float BULLET_SPEED = 16f;
     private static final float RECOIL_IMPULSE = -0.0245f;
     private static final float RAY_CAST_DISTANCE = 400f;
 
@@ -126,10 +126,10 @@ public class Bandit extends Actor {
     }
 
     private void prepareBullet() {
-        bullet.x = x;
+        bullet.x = x + (facingRight ? 6 : -6);
         bullet.y = y;
         bullet.getComponent(PhysicsComponent.class).body.setTransform(
-                new Vec2(Coordinates.toSimulationX(x + (facingRight ? 4 : -4)), Coordinates.toSimulationY(y)),
+                new Vec2(Coordinates.toSimulationX(x + (facingRight ? 6 : -6)), Coordinates.toSimulationY(y)),
                 facingRight ? angle : -angle
         );
     }
@@ -139,8 +139,11 @@ public class Bandit extends Actor {
             float dirY = (float) Math.sin(angle) *  (facingRight ? BULLET_SPEED : -BULLET_SPEED);
 
             bullet.activate();
+            bullet.getComponent(PhysicsComponent.class).body.setActive(true);
             bullet.shoot(dirX, dirY);
             Log.d("BANDIT", "SHOOT");
+            Log.d("BANDIT", "Is bullet active? " + bullet.getComponent(PhysicsComponent.class).body.isActive());
+            Log.d("BANDIT", "Bullet pos: " + bullet.getComponent(PhysicsComponent.class).body.getPosition());
         }
 
         private void applyRecoil() {
@@ -154,6 +157,7 @@ public class Bandit extends Actor {
         @Override
         public void update(float dt) {
             super.update(dt);
+            bullet.update(dt);
 
             if (isDead) return;
 
@@ -164,7 +168,6 @@ public class Bandit extends Actor {
                     Coordinates.toSimulationY(y)
             );
 
-            bullet.update(dt);
             alertActor.update(dt);
         }
 

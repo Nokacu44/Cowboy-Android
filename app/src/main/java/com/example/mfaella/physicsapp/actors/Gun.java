@@ -47,7 +47,11 @@ public class Gun extends Actor {
     private final ArrayList<Bullet> bullets;
     private int currentBullet;
 
-    private final PathEffect dotEffect = new DashPathEffect(new float[]{2f, 4f}, 0f);
+    private final Vec2 trajectoryStart = new Vec2();
+    private final Vec2 trajectoryImpulse = new Vec2();
+    private final Vec2 initialVelocity = new Vec2();
+    private final List<Vec2> trajectoryPoints = new ArrayList<>();
+    private final int trajectoryPointCount = 20;
 
     public Gun(GameLevel level, float x, float y, Input input, int rounds) {
         super(level, x, y);
@@ -65,6 +69,10 @@ public class Gun extends Actor {
         level.events.connect(BEGIN_AIM, (data) -> {
             AudioManager.getSound("audio/chambering.mp3").play(100);
         });
+
+        for (int i = 0; i < trajectoryPointCount; i++) {
+            trajectoryPoints.add(new Vec2());
+        }
 
     }
 
@@ -118,19 +126,24 @@ public class Gun extends Actor {
             float dirX = (float) Math.cos(angle) * 16;
             float dirY = (float) Math.sin(angle) * 16;
 
-            List<Vec2> points = calculateTrajectory(
-                    new Vec2(Coordinates.toSimulationX(x), Coordinates.toSimulationY(y)),
-                    new Vec2((dirX * 16 / 250 ) , (dirY * 16 / 250)),
+            trajectoryStart.set(Coordinates.toSimulationX(x), Coordinates.toSimulationY(y));
+            trajectoryImpulse.set((dirX * 16 / 250), (dirY * 16 / 250));
+
+            calculateTrajectory(
+                    trajectoryStart,
+                    trajectoryImpulse,
                     0.04f,
                     level.physicsManager.gravity,
-                    0.25f,          // quanti punti
-                    20        // ogni quanti secondi
+                    0.25f,
+                    trajectoryPointCount
             );
-//
-            for (Vec2 p : points) {
+
+            for (int i = 0; i < trajectoryPoints.size(); i++) {
+                Vec2 p = trajectoryPoints.get(i);
                 g.drawRect(Coordinates.toPixelsX(p.getX()), Coordinates.toPixelsX(p.getY()), 1, 1, Color.RED);
             }
         }
+
         super.draw(g);
         for (int i = 0; i < this.bullets.size(); i++) {
             this.bullets.get(i).draw(g);
@@ -148,7 +161,7 @@ public class Gun extends Actor {
     }
 
 
-    private List<Vec2> calculateTrajectory(
+    private void  calculateTrajectory(
             Vec2 startPosition,
             Vec2 impulse,
             float bodyMass,
@@ -156,23 +169,17 @@ public class Gun extends Actor {
             float totalDuration,  // es: 2 secondi
             int pointCount)       // es: 20 punti
     {
-        List<Vec2> trajectoryPoints = new ArrayList<>();
-
-        // Convert impulse to initial velocity
-        Vec2 initialVelocity = new Vec2(impulse.getX() / bodyMass, impulse.getY() / bodyMass);
-
-
+        initialVelocity.set(impulse.getX() / bodyMass, impulse.getY() / bodyMass);
         float timeStep = totalDuration / pointCount;
 
+        // Nessuna allocazione qui
         for (int i = 0; i < pointCount; i++) {
             float t = i * timeStep;
-
-            // position = start + v * t + 0.5 * g * t^2
             float x = startPosition.getX() + initialVelocity.getX() * t + 0.5f * gravity.getX() * t * t;
             float y = startPosition.getY() + initialVelocity.getY() * t + 0.5f * gravity.getY() * t * t;
 
-            trajectoryPoints.add(new Vec2(x, y));
+            trajectoryPoints.get(i).set(x, y);
         }
-        return trajectoryPoints;
     }
+
 }

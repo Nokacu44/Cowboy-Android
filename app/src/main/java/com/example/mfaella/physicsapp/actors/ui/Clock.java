@@ -1,6 +1,7 @@
 package com.example.mfaella.physicsapp.actors.ui;
 
 import com.example.mfaella.physicsapp.Coordinates;
+import com.example.mfaella.physicsapp.Deflection;
 import com.example.mfaella.physicsapp.actors.Actor;
 import com.example.mfaella.physicsapp.components.PhysicsComponent;
 import com.example.mfaella.physicsapp.components.SpriteComponent;
@@ -9,7 +10,7 @@ import com.example.mfaella.physicsapp.levels.GameLevel;
 import com.example.mfaella.physicsapp.managers.PixmapManager;
 import com.google.fpl.liquidfun.BodyType;
 
-public class Clock extends Actor {
+public class Clock extends Actor implements Deflection {
 
     public Clock(GameLevel level, float x, float y) {
         super(level, x, y);
@@ -26,4 +27,8 @@ public class Clock extends Actor {
         }, 18 * 1000);
     }
 
+    @Override
+    public float getDeflectionAngle() {
+        return -30;
+    }
 }

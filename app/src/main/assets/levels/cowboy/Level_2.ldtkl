@@ -86,7 +86,7 @@
 				},
 				{
 					"__identifier": "Platform",
-					"__grid": [5,8],
+					"__grid": [3,5],
 					"__pivot": [0.5,0.5],
 					"__tags": [],
 					"__tile": null,
@@ -95,14 +95,14 @@
 					"width": 38,
 					"height": 6,
 					"defUid": 6,
-					"px": [88,136],
+					"px": [60,88],
 					"fieldInstances": [{ "__identifier": "angle", "__type": "Float", "__value": 0, "__tile": null, "defUid": 12, "realEditorValues": [] }],
-					"__worldX": 440,
-					"__worldY": 136
+					"__worldX": 412,
+					"__worldY": 88
 				},
 				{
 					"__identifier": "Hangman",
-					"__grid": [11,2],
+					"__grid": [10,0],
 					"__pivot": [0.5,0.5],
 					"__tags": [],
 					"__tile": null,
@@ -111,14 +111,14 @@
 					"width": 1,
 					"height": 1,
 					"defUid": 5,
-					"px": [183,42],
+					"px": [165,0],
 					"fieldInstances": [],
-					"__worldX": 535,
-					"__worldY": 42
+					"__worldX": 517,
+					"__worldY": 0
 				},
 				{
 					"__identifier": "PlayerStart",
-					"__grid": [5,7],
+					"__grid": [4,4],
 					"__pivot": [0.5,0.5],
 					"__tags": [],
 					"__tile": null,
@@ -127,10 +127,10 @@
 					"width": 13,
 					"height": 25,
 					"defUid": 4,
-					"px": [88,120],
+					"px": [72,72],
 					"fieldInstances": [],
-					"__worldX": 440,
-					"__worldY": 120
+					"__worldX": 424,
+					"__worldY": 72
 				},
 				{
 					"__identifier": "Platform",
@@ -175,33 +175,26 @@
 					"width": 24,
 					"height": 19,
 					"defUid": 9,
-					"px": [251,135],
+					"px": [252,136],
 					"fieldInstances": [{ "__identifier": "facingRight", "__type": "Bool", "__value": false, "__tile": null, "defUid": 14, "realEditorValues": [] }],
-					"__worldX": 603,
-					"__worldY": 135
+					"__worldX": 604,
+					"__worldY": 136
 				},
 				{
-					"__identifier": "FryingPan",
-					"__grid": [14,0],
+					"__identifier": "Platform",
+					"__grid": [10,5],
 					"__pivot": [0.5,0.5],
 					"__tags": [],
 					"__tile": null,
-					"__smartColor": "#3A4466",
-					"iid": "1f3ec3d0-3740-11f0-b76a-cde2a2458f21",
-					"width": 6,
+					"__smartColor": "#BE4A2F",
+					"iid": "ff5e78a0-5e50-11f0-b475-c77b9a22844f",
+					"width": 38,
 					"height": 6,
-					"defUid": 15,
-					"px": [232,6],
-					"fieldInstances": [
-						{ "__identifier": "hanged", "__type": "Bool", "__value": true, "__tile": null, "defUid": 16, "realEditorValues": [{
-							"id": "V_Bool",
-							"params": [ true ]
-						}] },
-						{ "__identifier": "deflectionAngle", "__type": "Float", "__value": -45, "__tile": null, "defUid": 17, "realEditorValues": [] },
-						{ "__identifier": "ropeLength", "__type": "Int", "__value": 4, "__tile": null, "defUid": 19, "realEditorValues": [{ "id": "V_Int", "params": [4] }] }
-					],
-					"__worldX": 584,
-					"__worldY": 6
+					"defUid": 6,
+					"px": [163,88],
+					"fieldInstances": [{ "__identifier": "angle", "__type": "Float", "__value": 12, "__tile": null, "defUid": 12, "realEditorValues": [{ "id": "V_Float", "params": [12] }] }],
+					"__worldX": 515,
+					"__worldY": 88
 				}
 			]
 		}

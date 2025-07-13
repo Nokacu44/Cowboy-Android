@@ -12,7 +12,7 @@ public class Level2 extends GameLevel{
         loadFromFile("levels/cowboy/Level_2.ldtkl");
         actors.add(new MainUI(this));
         AudioManager.getSound("audio/level_intro.mp3").play(100);
-        levelRulesController.setCheckDelaysMs(2000);
+        levelRulesController.setCheckDelaysMs(4000);
     }
 
     @Override
