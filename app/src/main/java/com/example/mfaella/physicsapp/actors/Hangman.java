@@ -2,9 +2,7 @@ package com.example.mfaella.physicsapp.actors;
 
 import static com.example.mfaella.physicsapp.events.GameEvents.EventType.HANGMAN_DEAD;
 
-import android.util.Log;
 
-import com.example.mfaella.physicsapp.CollisionHandler;
 import com.example.mfaella.physicsapp.Coordinates;
 import com.example.mfaella.physicsapp.components.PhysicsComponent;
 import com.example.mfaella.physicsapp.components.SpriteComponent;

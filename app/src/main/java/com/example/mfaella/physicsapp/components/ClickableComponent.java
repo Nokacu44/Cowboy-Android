@@ -32,8 +32,6 @@ public class ClickableComponent extends Component {
     }
     @Override
     public void update(float dt) {
-        //Log.d("UI", String.format("%s %s %s", bounds, input.getTouchX(0), input.getTouchY(0)));
-        //if (Coordinates.isInRadius(actor.x, actor.y, input.getTouchX(0), input.getTouchY(0), 16) && input.isTouchJustDown(0)  ) {
         if (Coordinates.isInRect(input.getTouchX(0), input.getTouchY(0), bounds) && input.isTouchJustDown(0)  ) {
             if (onClickCallback != null) {
                 onClickCallback.run();

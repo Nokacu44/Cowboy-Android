@@ -3,12 +3,9 @@ package com.example.mfaella.physicsapp.managers;
 import com.example.mfaella.physicsapp.MyContactListener;
 import com.example.mfaella.physicsapp.PhysicsTaskQueue;
 import com.google.fpl.liquidfun.ContactListener;
-import com.google.fpl.liquidfun.Joint;
 import com.google.fpl.liquidfun.Vec2;
 import com.google.fpl.liquidfun.World;
 
-import java.util.concurrent.Callable;
-import java.util.function.Consumer;
 
 public class PhysicsManager {
 
@@ -53,8 +50,6 @@ public class PhysicsManager {
     public void dispose() {
         if (destroyed) return;
         physicsWorld.delete();
-        // Eventuale cleanup di altre risorse (se serve)
-        // Ad esempio: particle systems, se li usi
         destroyed = true;
     }
 }

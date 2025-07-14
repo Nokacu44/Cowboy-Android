@@ -4,21 +4,17 @@ import android.util.Log;
 
 
 import com.badlogic.androidgames.framework.FileIO;
-import com.badlogic.androidgames.framework.Game;
 import com.example.mfaella.physicsapp.actors.Actor;
 import com.example.mfaella.physicsapp.actors.Bandit;
 import com.example.mfaella.physicsapp.actors.Crate;
-import com.example.mfaella.physicsapp.actors.DeflectionTry;
 import com.example.mfaella.physicsapp.actors.FryingPan;
 import com.example.mfaella.physicsapp.actors.Hangman;
 import com.example.mfaella.physicsapp.actors.Player;
 import com.example.mfaella.physicsapp.actors.Rope;
-import com.example.mfaella.physicsapp.actors.ui.Clock;
 import com.example.mfaella.physicsapp.components.PhysicsComponent;
 import com.example.mfaella.physicsapp.components.SpriteComponent;
 import com.example.mfaella.physicsapp.levels.GameLevel;
 import com.example.mfaella.physicsapp.managers.PixmapManager;
-import com.example.mfaella.physicsapp.actors.ui.Button;
 import com.google.fpl.liquidfun.BodyType;
 
 import org.json.JSONArray;
@@ -171,10 +167,6 @@ public class LevelLoader {
                             break;
                         case "Crate":
                             actors.add(new Crate(levelInstance, x, y));
-                            break;
-
-                        case "DeflectionTry":
-                            actors.add(new DeflectionTry(levelInstance, x, y));
                             break;
 
                         case "Rock":

@@ -172,7 +172,6 @@ public class Gun extends Actor {
         initialVelocity.set(impulse.getX() / bodyMass, impulse.getY() / bodyMass);
         float timeStep = totalDuration / pointCount;
 
-        // Nessuna allocazione qui
         for (int i = 0; i < pointCount; i++) {
             float t = i * timeStep;
             float x = startPosition.getX() + initialVelocity.getX() * t + 0.5f * gravity.getX() * t * t;

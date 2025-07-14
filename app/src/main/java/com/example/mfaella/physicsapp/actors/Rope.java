@@ -25,8 +25,6 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.function.BiFunction;
 
-// TODO: delegare al fatto che ci sia un hangman l'invio dell'evento rope cut
-
 public class Rope extends Actor{
     public enum RopeType {
         SOFT,

@@ -57,7 +57,6 @@ public class PhysicsComponent extends Component {
         this.width = width;
         this.height = height;
         box.setAsBox(this.width / 2, this.height / 2);
-        //box.setAsBox(this.width / 2, this.height / 2, width / 2, -height / 2, 0);
         FixtureDef fixturedef = new FixtureDef();
         fixturedef.setShape(box);
         fixturedef.setFriction(0.2f);       // default 0.2

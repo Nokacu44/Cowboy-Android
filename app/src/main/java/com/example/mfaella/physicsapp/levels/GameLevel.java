@@ -29,8 +29,6 @@ public abstract class GameLevel extends Screen {
     public final TimerManager timerManager = new TimerManager();
     public final PhysicsManager physicsManager = new PhysicsManager(new Vec2(0f, 16f));
     public final GameEvents events = new GameEvents();
-//    public final CinematicManager cinematicManager = new CinematicManager();
-//    public final AudioManager audioManager = new AudioManager();
 
     ArrayList<Actor> actors = new ArrayList<>();
 
@@ -43,14 +41,6 @@ public abstract class GameLevel extends Screen {
 
     public GameLevel(Game game) {
         super(game);
-
-        // la GC dava problemi dopo un pò quindi lo salvo
-        // TODO: inserire nel physics manager
-        //PhysicsManager.physicsWorld.setContactListener(contactListener);
-
-        // Game Events
-        CinematicManager.resetSlowMotion();
-        //GameEvents.connect(GameEvents.EventType.SHOOT, (data) -> CinematicManager.shootSlowMotion());
 
         // Level Events
         levelRulesController = new LevelRulesController(events, timerManager, result -> {
@@ -77,21 +67,8 @@ public abstract class GameLevel extends Screen {
     @Override
     public void update(float deltaTime) {
         if (!active) return;
-//        CinematicManager.camera.update(deltaTime);
-
-//        AndroidGraphics graphics = (AndroidGraphics) game.getGraphics();
-//        Camera camera = CinematicManager.camera;
-//
-//        graphics.canvas.scale(camera.scale, camera.scale);
-//        graphics.canvas.translate(-camera.x * 2, -camera.y * 2.8f);
-
         deltaTime = deltaTime * CinematicManager.slowMotionFactor;
         deltaTime = Math.min(deltaTime, 1/30f);
-//        Vec2 acturalGravity = gravity;
-//        acturalGravity.setX(acturalGravity.getX() * (CinematicManager.slowMotionFactor));  // Applica il fattore di slow-motion alla gravità
-//        acturalGravity.setY(acturalGravity.getY() * (CinematicManager.slowMotionFactor));  // Applica il fattore di slow-motion alla gravità
-//
-//        physicsWorld.setGravity(acturalGravity.getX(), acturalGravity.getY());
 
         physicsManager.updatePhysicsWorld(deltaTime);
         physicsManager.executeAllPhysicsTasks();
@@ -101,18 +78,6 @@ public abstract class GameLevel extends Screen {
         }
 
         input(game.getInput());
-
-//        if (inp.isTouchDown(0)) {
-//            float x = (float) inp.getTouchX(0);
-//            float y = (float) inp.getTouchY(0);
-//            Log.d("INPUT: ", String.format("Position %s,%s", x, y));
-//        }
-//        if (inp.isTouchJustRelease(0)) {
-//            Log.d("INPUT ", "JUST RELEASE");
-//        }
-//        if (inp.isTouchJustDown(0)) {
-//            Log.d("INPUT ", "JUST DOWN");
-//        }
     }
 
     @Override
