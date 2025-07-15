@@ -4,6 +4,7 @@ import android.graphics.RectF;
 
 import com.badlogic.androidgames.framework.Game;
 import com.badlogic.androidgames.framework.Input;
+import com.badlogic.androidgames.framework.Music;
 import com.example.armando.game.Coordinates;
 import com.example.armando.game.actors.Actor;
 import com.example.armando.game.actors.ui.Button;
@@ -22,6 +23,8 @@ public class MainMenu extends GameLevel {
     Actor sheriffStar;
     boolean beginPressed = false;
     boolean starBroken = false;
+
+    Music backgroundMusic;
 
     public MainMenu(Game game) {
         super(game);
@@ -66,8 +69,9 @@ public class MainMenu extends GameLevel {
         actors.add(brokenGlass);
         brokenGlass.getComponent(SpriteComponent.class).hide();
 
-        AudioManager.getMusic("audio/cesare_rides_again.mp3").play();
-
+        backgroundMusic = AudioManager.getMusic("audio/cesare_rides_again.mp3");
+        backgroundMusic.setLooping(true);
+        backgroundMusic.play();
     }
 
     private void crackGlass() {
@@ -92,5 +96,15 @@ public class MainMenu extends GameLevel {
         return "MainMenu";
     }
 
+    @Override
+    public void pause() {
+        super.pause();
+        backgroundMusic.pause();
+    }
 
+    @Override
+    public void resume() {
+        super.resume();
+        backgroundMusic.play();
+    }
 }

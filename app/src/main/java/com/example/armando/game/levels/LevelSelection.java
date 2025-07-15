@@ -4,6 +4,7 @@ import android.graphics.RectF;
 
 import com.badlogic.androidgames.framework.Game;
 import com.badlogic.androidgames.framework.Input;
+import com.badlogic.androidgames.framework.Music;
 import com.example.armando.game.Coordinates;
 import com.example.armando.game.actors.Actor;
 import com.example.armando.game.actors.ui.Button;
@@ -24,25 +25,28 @@ public class LevelSelection extends GameLevel{
     Actor brokenGlass;
     boolean beginPressed = false;
 
+
+    Music backgroundMusic;
+
     public LevelSelection(Game game) {
         super(game);
 
         addActor(new LevelSlot(this, 16 + 48 + 16, 48+ 48, "ui/level_selection_1.png",() -> {
             crackGlass();
             timerManager.scheduleOnce(() -> game.getLevelManager().startLevel(Level1::new), 1000);
-            AudioManager.getMusic("audio/cesare_rides_again.mp3").stop();
+            AudioManager.getMusic("audio/cesare_rides_again.mp3").pause();
         }, GlobalScoreManager.getStars("Level1")));
 
         addActor(new LevelSlot(this, 16 + 48 * 2 + 48, 48 ,"ui/level_selection_2.png",() -> {
             crackGlass();
             timerManager.scheduleOnce(() -> game.getLevelManager().startLevel(Level2::new), 1000);
-            AudioManager.getMusic("audio/cesare_rides_again.mp3").stop();
+            AudioManager.getMusic("audio/cesare_rides_again.mp3").pause();
         }, GlobalScoreManager.getStars("Level2")));
 
         addActor(new LevelSlot(this, 16 + 48 * 3 + 48 + 32, 48 + 48, "ui/level_selection_3.png",() -> {
             crackGlass();
             timerManager.scheduleOnce(() -> game.getLevelManager().startLevel(Level3::new), 1000);
-            AudioManager.getMusic("audio/cesare_rides_again.mp3").stop();
+            AudioManager.getMusic("audio/cesare_rides_again.mp3").pause();
         }, GlobalScoreManager.getStars("Level3")));
 
         sheriffStar = new SheriffStar(this, 70, 72, true);
@@ -68,10 +72,9 @@ public class LevelSelection extends GameLevel{
         addActor(new Button(this, 32, 16, "ui/go_back_btn.png", () -> {
             game.getLevelManager().startLevel(MainMenu::new);
         }));
-        if (!AudioManager.getMusic("audio/cesare_rides_again.mp3").isPlaying()) {
-            AudioManager.getMusic("audio/cesare_rides_again.mp3").play();
-        }
 
+        backgroundMusic = AudioManager.getMusic("audio/cesare_rides_again.mp3");
+        backgroundMusic.play();
     }
 
     private void crackGlass() {
@@ -95,4 +98,16 @@ public class LevelSelection extends GameLevel{
         return "LevelSelection";
     }
 
+    @Override
+    public void pause() {
+        super.pause();
+        backgroundMusic.pause();
+    }
+
+    @Override
+    public void resume() {
+        super.resume();
+        backgroundMusic.play();
+
+    }
 }
