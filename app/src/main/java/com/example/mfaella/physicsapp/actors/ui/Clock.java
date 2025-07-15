@@ -22,6 +22,7 @@ public class Clock extends Actor implements Deflection {
         physicsComponent.body.setAngularDamping(8f);
         addComponent(physicsComponent);
 
+
         level.timerManager.scheduleOnce(() -> {
             level.events.emit(GameEvents.EventType.TIMEOUT);
         }, 18 * 1000);

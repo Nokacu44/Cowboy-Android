@@ -1,5 +1,7 @@
 package com.example.mfaella.physicsapp.levels;
 
+import static com.example.mfaella.physicsapp.events.GameEvents.EventType.GAME_FINISHED;
+
 import com.badlogic.androidgames.framework.Game;
 import com.badlogic.androidgames.framework.Graphics;
 import com.badlogic.androidgames.framework.Input;
@@ -29,13 +31,16 @@ public abstract class GameLevel extends Screen {
     public final TimerManager timerManager = new TimerManager();
     public final PhysicsManager physicsManager = new PhysicsManager(new Vec2(0f, 16f));
     public final GameEvents events = new GameEvents();
+    public final CinematicManager cinematicManager = new CinematicManager();
 
     ArrayList<Actor> actors = new ArrayList<>();
+
+
 
     protected void loadFromFile(String fileName) {
         actors = (ArrayList<Actor>) new LevelLoader(game.getFileIO()).loadActors(this, fileName);
         for (int i = 0; i < 60; i++) {
-            physicsManager.updatePhysicsWorld(1/60f);
+            physicsManager.update(1/60f);
         }
     }
 
@@ -45,9 +50,12 @@ public abstract class GameLevel extends Screen {
         // Level Events
         levelRulesController = new LevelRulesController(events, timerManager, result -> {
             finished = true;
+            events.emit(GAME_FINISHED);
 
             String currentLevelId = getLevelId();
             GlobalScoreManager.setStars(currentLevelId, result.stars);
+
+            cinematicManager.applySlowMotion(0.6f);
 
             if (result.victory) {
                 addActor(new LevelWin(this, result.stars));
@@ -67,11 +75,10 @@ public abstract class GameLevel extends Screen {
     @Override
     public void update(float deltaTime) {
         if (!active) return;
-        deltaTime = deltaTime * CinematicManager.slowMotionFactor;
-        deltaTime = Math.min(deltaTime, 1/30f);
+        deltaTime *= cinematicManager.slowMotionFactor;
 
-        physicsManager.updatePhysicsWorld(deltaTime);
-        physicsManager.executeAllPhysicsTasks();
+
+        physicsManager.update(deltaTime);
 
         for (int i = 0; i < actors.size(); ++i) {
             actors.get(i).update(deltaTime);

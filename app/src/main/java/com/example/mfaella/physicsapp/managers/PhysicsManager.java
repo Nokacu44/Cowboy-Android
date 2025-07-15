@@ -9,6 +9,10 @@ import com.google.fpl.liquidfun.World;
 
 public class PhysicsManager {
 
+    private static final float FIXED_TIME_STEP = 1f / 60f;
+    private static final float MAX_ACCUMULATED_TIME = 0.25f;
+    private float accumulator = 0f;
+
     private static final int VELOCITY_ITERATIONS = 8;
     private static final int POSITION_ITERATIONS = 6;
     private static final int PARTICLE_ITERATIONS = 4;
@@ -29,16 +33,18 @@ public class PhysicsManager {
         this.physicsWorld.setContactListener(contactListener);
     }
 
-    public void updatePhysicsWorld(float deltaTime) {
-        if (destroyed) {
-            return;
-        }
-        physicsWorld.step(deltaTime, VELOCITY_ITERATIONS, POSITION_ITERATIONS, PARTICLE_ITERATIONS);
-    }
-
-    public void executeAllPhysicsTasks() {
+    public void update(float deltaTime) {
         if (destroyed) return;
-        physicsQueue.executeAll();
+
+        deltaTime = Math.min(deltaTime, MAX_ACCUMULATED_TIME);
+
+        accumulator += deltaTime;
+
+        while (accumulator >= FIXED_TIME_STEP) {
+            physicsWorld.step(FIXED_TIME_STEP, VELOCITY_ITERATIONS, POSITION_ITERATIONS, PARTICLE_ITERATIONS);
+            physicsQueue.executeAll();
+            accumulator -= FIXED_TIME_STEP;
+        }
     }
 
     public void postTask(Runnable task) {

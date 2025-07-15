@@ -19,7 +19,8 @@ public class GameEvents {
         ROPE_CUT,
         HANGMAN_DEAD,
         OUT_OF_AMMO,
-        TIMEOUT
+        TIMEOUT,
+        GAME_FINISHED
     }
 
     private final Map<EventType, List<Consumer<GameEventData>>> eventListeners;

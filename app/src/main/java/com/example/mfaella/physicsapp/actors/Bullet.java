@@ -19,7 +19,7 @@ import com.google.fpl.liquidfun.Fixture;
 import com.google.fpl.liquidfun.RayCastCallback;
 import com.google.fpl.liquidfun.Vec2;
 
-public class Bullet extends Actor implements Pool.Poolable {
+public class Bullet extends Actor {
     private final PhysicsComponent physicsComponent;
     private Vec2 lastVelocity;
 
@@ -101,14 +101,12 @@ public class Bullet extends Actor implements Pool.Poolable {
         level.timerManager.scheduleOnce(this::reset, 3000);
     }
 
-    @Override
     public void activate() {
         physicsComponent.body.setAwake(true);
         physicsComponent.body.setActive(true);
         getComponent(SpriteComponent.class).show();
     }
 
-    @Override
     public void reset() {
         physicsComponent.body.setAwake(false);
         physicsComponent.body.setActive(false);

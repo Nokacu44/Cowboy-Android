@@ -3,13 +3,15 @@ package com.example.mfaella.physicsapp.managers;
 public class CinematicManager {
 
     private static final float DEFAULT_SLOW_MOTION = 1f;
-    private static final float SHOOT_SLOW_MOTION = .2f;
 
-    public static float slowMotionFactor = DEFAULT_SLOW_MOTION;
+    public float slowMotionFactor = DEFAULT_SLOW_MOTION;
 
-    public static void resetSlowMotion() {
+    public void resetSlowMotion() {
         slowMotionFactor = DEFAULT_SLOW_MOTION;
     }
 
+    public void applySlowMotion(float slowMotion) {
+        slowMotionFactor = slowMotion;
+    }
 
 }

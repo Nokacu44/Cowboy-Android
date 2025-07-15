@@ -27,6 +27,7 @@ public class MainMenu extends GameLevel {
     Actor brokenGlass;
     Actor sheriffStar;
     boolean beginPressed = false;
+    boolean starBroken = false;
 
     public MainMenu(Game game) {
         super(game);
@@ -44,6 +45,14 @@ public class MainMenu extends GameLevel {
         sheriffStar.getComponent(SpriteComponent.class).setCurrentFrame(0);
         sheriffStar.addComponent(new ClickableComponent(game.getInput(), new RectF(sheriffStar.x - 32, sheriffStar.y - 32, sheriffStar.x + 32, sheriffStar.y + 32), () -> {
             sheriffStar.getComponent(PhysicsComponent.class).body.setActive(true);
+            if (!starBroken) {
+                timerManager.scheduleOnce(() -> {
+                    sheriffStar.getComponent(PhysicsComponent.class).body.setAwake(false);
+                    sheriffStar.getComponent(PhysicsComponent.class).body.setActive(false);
+                }, 3000);
+                starBroken = true;
+            }
+
             crackGlass();
         }));
 

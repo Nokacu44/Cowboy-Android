@@ -126,12 +126,12 @@ public class Bandit extends Actor {
     }
 
     private void prepareBullet() {
-        bullet.x = x + (facingRight ? 6 : -6);
-        bullet.y = y;
         bullet.getComponent(PhysicsComponent.class).body.setTransform(
                 new Vec2(Coordinates.toSimulationX(x + (facingRight ? 6 : -6)), Coordinates.toSimulationY(y)),
                 facingRight ? angle : -angle
         );
+        bullet.x = x + (facingRight ? 6 : -6);
+        bullet.y = y;
     }
 
         private void fireBullet() {
@@ -182,6 +182,7 @@ public class Bandit extends Actor {
             // Enter Alert state
             showAlertStatus();
 
+            prepareBullet();
             // Shoot after delay
             level.timerManager.scheduleOnce(() -> {
                 shoot();
