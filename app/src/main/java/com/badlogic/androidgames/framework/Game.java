@@ -1,6 +1,6 @@
 package com.badlogic.androidgames.framework;
 
-import com.example.armando.cowboy.managers.LevelManager;
+import com.example.armando.game.managers.LevelManager;
 
 public interface Game {
     public Input getInput();

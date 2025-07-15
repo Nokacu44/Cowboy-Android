@@ -15,13 +15,13 @@ import com.badlogic.androidgames.framework.Game;
 import com.badlogic.androidgames.framework.Graphics;
 import com.badlogic.androidgames.framework.Input;
 import com.badlogic.androidgames.framework.Screen;
-import com.example.armando.cowboy.Box;
-import com.example.armando.cowboy.Coordinates;
-import com.example.armando.cowboy.managers.AudioManager;
-import com.example.armando.cowboy.managers.GlobalScoreManager;
-import com.example.armando.cowboy.managers.LevelManager;
-import com.example.armando.cowboy.managers.PixmapManager;
-import com.example.armando.cowboy.managers.ScorePersistence;
+import com.example.armando.game.Box;
+import com.example.armando.game.Coordinates;
+import com.example.armando.game.managers.AudioManager;
+import com.example.armando.game.managers.GlobalScoreManager;
+import com.example.armando.game.managers.LevelManager;
+import com.example.armando.game.managers.PixmapManager;
+import com.example.armando.game.managers.ScorePersistence;
 
 public abstract class AndroidGame extends Activity implements Game {
     AndroidFastRenderView renderView;

@@ -10,7 +10,7 @@ import android.view.SurfaceView;
 
 import androidx.annotation.NonNull;
 
-import com.example.armando.cowboy.Coordinates;
+import com.example.armando.game.Coordinates;
 
 @SuppressLint("ViewConstructor")
 public class AndroidFastRenderView extends SurfaceView implements Runnable {
