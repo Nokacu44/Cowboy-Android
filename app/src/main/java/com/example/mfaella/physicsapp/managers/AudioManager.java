@@ -21,7 +21,7 @@ public class AudioManager {
         if (AudioManager.androidAudio == null) {
             AudioManager.androidAudio = audio;
             preloadSoundsFromDir("audio");
-            Log.d("AUDIO", "AudioManager initialized");
+            //Log.d("AUDIO", "AudioManager initialized");
 
         }
     }

@@ -87,7 +87,7 @@ public class Gun extends Actor {
         //this.rotateTowards(x, y, target_x, target_y);
         float dirX = (float) Math.cos(angle) * 16;
         float dirY = (float) Math.sin(angle) * 16;
-        Log.d("DIRECTION ", String.format("%s %s", dirX, dirY));
+        //Log.d("DIRECTION ", String.format("%s %s", dirX, dirY));
         bullet.activate();
         bullet.shoot(dirX, dirY);
         currentBullet += 1;

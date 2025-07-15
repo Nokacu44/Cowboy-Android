@@ -213,11 +213,11 @@ public class PhysicsComponent extends Component {
     public void clearJoints() {
         for (JointInfo info : joints) {
             info.other.joints.removeIf(j -> j.joint == info.joint);
-            Log.d("ROPE", "sto eliminando");
+            //Log.d("ROPE", "sto eliminando");
             level.physicsManager.physicsWorld.destroyJoint(info.joint);
         }
         joints.clear();
-        Log.d("ROPE", String.valueOf(joints.size()));
+        //Log.d("ROPE", String.valueOf(joints.size()));
 
     }
 

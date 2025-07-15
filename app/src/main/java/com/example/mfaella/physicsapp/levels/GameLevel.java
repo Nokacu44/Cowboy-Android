@@ -77,7 +77,6 @@ public abstract class GameLevel extends Screen {
         if (!active) return;
         deltaTime *= cinematicManager.slowMotionFactor;
 
-
         physicsManager.update(deltaTime);
 
         for (int i = 0; i < actors.size(); ++i) {

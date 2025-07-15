@@ -141,9 +141,9 @@ public class Bandit extends Actor {
             bullet.activate();
             bullet.getComponent(PhysicsComponent.class).body.setActive(true);
             bullet.shoot(dirX, dirY);
-            Log.d("BANDIT", "SHOOT");
-            Log.d("BANDIT", "Is bullet active? " + bullet.getComponent(PhysicsComponent.class).body.isActive());
-            Log.d("BANDIT", "Bullet pos: " + bullet.getComponent(PhysicsComponent.class).body.getPosition());
+            //Log.d("BANDIT", "SHOOT");
+            //Log.d("BANDIT", "Is bullet active? " + bullet.getComponent(PhysicsComponent.class).body.isActive());
+            //Log.d("BANDIT", "Bullet pos: " + bullet.getComponent(PhysicsComponent.class).body.getPosition());
         }
 
         private void applyRecoil() {

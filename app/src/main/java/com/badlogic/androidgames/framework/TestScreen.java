@@ -44,7 +44,7 @@ class TestScreen extends Screen {
             String text2 = in.readLine();
             in.close();
             
-            Log.d("MrNom", text + ", " + text2 );
+            //Log.d("MrNom", text + ", " + text2 );
         } catch(Exception ex) {
             ex.printStackTrace();
         }
@@ -75,20 +75,20 @@ class TestScreen extends Screen {
         List<KeyEvent> keyEvents = inp.getKeyEvents();
         int len = keyEvents.size();
         for(int i = 0; i < len; i++) {
-            Log.d("MrNom", keyEvents.get(i).toString());
+            //Log.d("MrNom", keyEvents.get(i).toString());
         }
         
         List<TouchEvent> touchEvents = inp.getTouchEvents();
         len = touchEvents.size();
         for(int i = 0; i < len; i++) {
-            Log.d("MrNom", touchEvents.get(i).toString());
+            //Log.d("MrNom", touchEvents.get(i).toString());
             if(touchEvents.get(i).type == TouchEvent.TOUCH_UP)
                 sound.play(1);
         }
         
         frames++;
         if(System.nanoTime() - startTime > 1000000000l) {
-            Log.d("MrNom", "fps: " + frames + ", delta: " + deltaTime);
+            //Log.d("MrNom", "fps: " + frames + ", delta: " + deltaTime);
             frames = 0;
             startTime = System.nanoTime();
         }
@@ -96,7 +96,7 @@ class TestScreen extends Screen {
 
     @Override
     public void pause() {
-        Log.d("MrNom", "pause");                
+        //Log.d("MrNom", "pause");
     }
 
     @Override

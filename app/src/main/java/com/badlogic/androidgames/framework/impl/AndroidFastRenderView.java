@@ -64,10 +64,10 @@ public class AndroidFastRenderView extends SurfaceView implements Runnable {
                 int offsetX = (width - targetWidth) / 2;
                 int offsetY = (height - targetHeight) / 2;
 
-                Log.d("GRAPHICS", String.valueOf(targetWidth));
-                Log.d("GRAPHICS", String.valueOf(targetHeight));
-                Log.d("GRAPHICS", String.valueOf(offsetX));
-                Log.d("GRAPHICS", String.valueOf(offsetY));
+                //Log.d("GRAPHICS", String.valueOf(targetWidth));
+                //Log.d("GRAPHICS", String.valueOf(targetHeight));
+                //Log.d("GRAPHICS", String.valueOf(offsetX));
+                //Log.d("GRAPHICS", String.valueOf(offsetY));
 
                 // Settare finalmente scaleX e scaleY
                 game.input.setScaleX((float) BASE_WIDTH / targetWidth);
@@ -111,7 +111,7 @@ public class AndroidFastRenderView extends SurfaceView implements Runnable {
 
             frameCounter++;
             if (fpsDeltaTime > 1) { // Print every second
-                Log.d("FastRenderView", "Current FPS = " + frameCounter);
+                //Log.d("FastRenderView", "Current FPS = " + frameCounter);
                 frameCounter = 0;
                 fpsTime = currentTime;
             }

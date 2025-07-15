@@ -18,7 +18,7 @@ public class PixmapManager {
             PixmapManager.graphics = graphics;
 
 
-            Log.d("ASSETS ", String.valueOf(pixmapMap));
+            //Log.d("ASSETS ", String.valueOf(pixmapMap));
         }
     }
 

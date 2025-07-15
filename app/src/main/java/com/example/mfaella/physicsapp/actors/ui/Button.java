@@ -15,7 +15,7 @@ public class Button extends Actor {
     public Button(GameLevel level, float x, float y, String texture, int frameWidth, int frameHeight, int frames, ClickableComponent.OnClickCallback onClick) {
         super(level, x, y);
         SpriteComponent spriteComponent = addComponent(new SpriteComponent(PixmapManager.getPixmap(texture), frameWidth, frameHeight, frames));
-        Log.d("BUTTON", "x: " + x + ", y: " + y + ", width: " + spriteComponent.frameWidth + ", height: " + spriteComponent.frameHeight);
+        //Log.d("BUTTON", "x: " + x + ", y: " + y + ", width: " + spriteComponent.frameWidth + ", height: " + spriteComponent.frameHeight);
         float halfWidth = (float) spriteComponent.frameWidth / 2;
         float halfHeight = (float) spriteComponent.frameHeight / 2;
         spriteComponent.setAnimating(false);

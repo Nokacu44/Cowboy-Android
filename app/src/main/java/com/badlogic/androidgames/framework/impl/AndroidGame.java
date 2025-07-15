@@ -64,7 +64,7 @@ public abstract class AndroidGame extends Activity implements Game {
         //Coordinates.screenSize = new Box(XMIN, YMIN, metrics.widthPixels, metrics.heightPixels);
 
         renderView = new AndroidFastRenderView(this, frameBuffer);
-        Log.d("RENDER VIEW DIMS", String.format("%s %s", renderView.getWidth(), renderView.getHeight()));
+        //Log.d("RENDER VIEW DIMS", String.format("%s %s", renderView.getWidth(), renderView.getHeight()));
         graphics = new AndroidGraphics(getAssets(), frameBuffer);
         fileIO = new AndroidFileIO(this);
         audio = new AndroidAudio(this);
@@ -82,7 +82,7 @@ public abstract class AndroidGame extends Activity implements Game {
 
         screen = getStartScreen();
 
-        Log.d("GAME WIDTH COORD", String.valueOf(Coordinates.gameWidth));
+        //Log.d("GAME WIDTH COORD", String.valueOf(Coordinates.gameWidth));
 
         setContentView(renderView);
 

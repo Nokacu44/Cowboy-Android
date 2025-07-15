@@ -89,7 +89,7 @@ public class MainMenu extends GameLevel {
         super.input(input);
         if (!beginPressed && input.isTouchJustDown(0)) {
             crackGlass();
-            Log.d("MENU", "menu");
+            //Log.d("MENU", "menu");
         }
     }
 

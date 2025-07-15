@@ -65,7 +65,7 @@ public class LevelSelection extends GameLevel{
         actors.add(brokenGlass);
         brokenGlass.getComponent(SpriteComponent.class).hide();
 
-        Log.d("MENU", String.valueOf(GlobalScoreManager.getAllStars()));
+        //Log.d("MENU", String.valueOf(GlobalScoreManager.getAllStars()));
 
         addActor(new Button(this, 32, 16, "ui/go_back_btn.png", () -> {
             game.getLevelManager().startLevel(MainMenu::new);

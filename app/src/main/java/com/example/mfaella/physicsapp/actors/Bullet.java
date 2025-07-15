@@ -49,7 +49,7 @@ public class Bullet extends Actor {
             level.timerManager.scheduleOnce(this::reset, 5);
         }
 
-        Log.d("VELOCITY", String.valueOf(myBody.getLinearVelocity().getX()));
+        //Log.d("VELOCITY", String.valueOf(myBody.getLinearVelocity().getX()));
 
 
         if (otherActor instanceof Deflection) {
