@@ -5,7 +5,7 @@ android {
     compileSdkVersion 34
 
     defaultConfig {
-        applicationId "com.example.mfaella.exampleapp"
+        applicationId "com.example.armando.cowboy"
         minSdkVersion 27
         targetSdkVersion 33
         versionCode 1

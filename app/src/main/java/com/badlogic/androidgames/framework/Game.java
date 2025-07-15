@@ -1,6 +1,6 @@
 package com.badlogic.androidgames.framework;
 
-import com.example.mfaella.physicsapp.managers.LevelManager;
+import com.example.armando.cowboy.managers.LevelManager;
 
 public interface Game {
     public Input getInput();

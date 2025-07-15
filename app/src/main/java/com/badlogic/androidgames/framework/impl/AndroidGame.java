@@ -6,8 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -17,13 +15,13 @@ import com.badlogic.androidgames.framework.Game;
 import com.badlogic.androidgames.framework.Graphics;
 import com.badlogic.androidgames.framework.Input;
 import com.badlogic.androidgames.framework.Screen;
-import com.example.mfaella.physicsapp.Box;
-import com.example.mfaella.physicsapp.Coordinates;
-import com.example.mfaella.physicsapp.managers.AudioManager;
-import com.example.mfaella.physicsapp.managers.GlobalScoreManager;
-import com.example.mfaella.physicsapp.managers.LevelManager;
-import com.example.mfaella.physicsapp.managers.PixmapManager;
-import com.example.mfaella.physicsapp.managers.ScorePersistence;
+import com.example.armando.cowboy.Box;
+import com.example.armando.cowboy.Coordinates;
+import com.example.armando.cowboy.managers.AudioManager;
+import com.example.armando.cowboy.managers.GlobalScoreManager;
+import com.example.armando.cowboy.managers.LevelManager;
+import com.example.armando.cowboy.managers.PixmapManager;
+import com.example.armando.cowboy.managers.ScorePersistence;
 
 public abstract class AndroidGame extends Activity implements Game {
     AndroidFastRenderView renderView;
